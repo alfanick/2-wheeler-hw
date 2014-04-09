@@ -54,6 +54,7 @@ void motor(chanend velocity, struct motor_pins &pins) {
           pins.a <: 0;
           pins.b <: 1;
         } else {
+          duty = 0;
           pins.enable <: 0;
         }
         break;
