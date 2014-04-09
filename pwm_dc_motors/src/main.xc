@@ -2,7 +2,7 @@
 #include <platform.h>
 
 #define PWM_SCALE 2
-#define PWM_RESOLUTION 8192
+#define PWM_RESOLUTION 10000
 #define PWM_PERCENT(x) ( (x) * PWM_RESOLUTION / 100 )
 
 struct motor_pins {
@@ -77,7 +77,7 @@ void motor(chanend velocity, struct motor_pins &pins) {
 
 void logic(chanend left_motor, chanend right_motor) {
   left_motor <: -PWM_PERCENT(25);
-  right_motor <: PWM_PERCENT(50);
+  right_motor <: PWM_PERCENT(17);
 
   timer t;
   unsigned time;
