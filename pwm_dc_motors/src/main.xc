@@ -60,6 +60,8 @@ void motor(chanend velocity, struct motor_pins &pins) {
         } else {
           duty = 0;
           pins.enable <: 0;
+          pins.a <: 0;
+          pins.b <: 0;
         }
         break;
 
@@ -88,7 +90,7 @@ void logic(chanend left_motor, chanend right_motor) {
     t when timerafter(time) :> void;
     time += 1000 * XS1_TIMER_KHZ;
 
-    left_motor <: PWM_PERCENT(state ? 25 : 75);
+    left_motor <: PWM_PERCENT(state ? 25 : 0);
     state = !state;
   }
 }
