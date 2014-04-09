@@ -58,7 +58,7 @@ void motor(chanend velocity, struct motor_pins &pins) {
         }
         break;
 
-      case t when timerafter(time) :> void:
+      case duty != 0 => t when timerafter(time) :> void:
         time += PWM_SCALE*(state ? duty : (PWM_RESOLUTION-duty));
         pins.enable <: state;
         state = !state;
@@ -69,7 +69,7 @@ void motor(chanend velocity, struct motor_pins &pins) {
 }
 
 void logic(chanend left_motor, chanend right_motor) {
-  left_motor <: -PWM_PERCENT(25);
+  left_motor <: 0;//-PWM_PERCENT(25);
   right_motor <: PWM_PERCENT(50);
 }
 
