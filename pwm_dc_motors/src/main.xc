@@ -26,9 +26,13 @@ int main() {
   chan left_motor, right_motor;
 
   par {
-    logic(left_motor, right_motor);
-    motor(left_motor, motors[0]);
-    motor(right_motor, motors[1]);
+    on tile[0] : logic(left_motor, right_motor);
+    on tile[0] :
+      [[combine]]
+      par {
+        motor(left_motor, motors[0]);
+        motor(right_motor, motors[1]);
+      }
   }
 
   return 0;
@@ -70,7 +74,7 @@ void motor(chanend velocity, struct motor_pins &pins) {
 }
 
 void logic(chanend left_motor, chanend right_motor) {
-  left_motor <: 0;//-PWM_PERCENT(25);
+  left_motor <: -PWM_PERCENT(25);
   right_motor <: PWM_PERCENT(50);
 }
 
