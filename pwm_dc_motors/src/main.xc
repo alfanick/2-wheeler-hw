@@ -1,40 +1,67 @@
 #include <xs1.h>
 #include <platform.h>
-#include <print.h>
-#include <stdio.h>
+
+#define PWM_SCALE 4
+#define PWM_RESOLUTION 4096
+#define PWM_PERCENT(x) ( (x) * PWM_RESOLUTION / 100 )
+
+struct motor_pins {
+  out port enable;
+  out port a;
+  out port b;
+};
 
 void logic(chanend left_motor, chanend right_motor);
-void motor(chanend left_motor, chanend right_motor, chanend duty);
-void pwm(out port pins[], unsigned pins_size, clock sync, chanend duty);
 
-out port motor_pins[] = {
-  XS1_PORT_1P, XS1_PORT_1O,
-  XS1_PORT_1N, XS1_PORT_1M
+[[combinable]]
+void motor(chanend velocity, struct motor_pins &pins);
+
+
+struct motor_pins motors[2] = {
+  { XS1_PORT_1P, XS1_PORT_1O, XS1_PORT_1N },
+  { XS1_PORT_1M, XS1_PORT_1L, XS1_PORT_1K }
 };
-clock pwm_sync = XS1_CLKBLK_1;
 
 int main() {
   chan left_motor, right_motor;
-  chan pwm_duty;
 
   par {
     logic(left_motor, right_motor);
-    motor(left_motor, right_motor, pwm_duty);
-    pwm(motor_pins, 4, pwm_sync, pwm_duty);
+    motor(left_motor, motors[0]);
+    motor(right_motor, motors[1]);
   }
 
   return 0;
 }
 
-void motor(chanend left_motor, chanend right_motor, chanend duty) {
+[[combinable]]
+void motor(chanend velocity, struct motor_pins &pins) {
+  timer t;
+  unsigned duty = 0, state = 0, time;
+
+  t :> time;
+
   while (1) {
     select {
-      case left_motor :> signed left_speed:
-        printf("LEFT = %d\n", left_speed);
+      case velocity :> signed speed:
+        if (speed > 0) {
+          duty = speed;
+          pins.b <: 0;
+          pins.a <: 1;
+        } else
+        if (speed < 0) {
+          duty = -speed;
+          pins.a <: 0;
+          pins.b <: 1;
+        } else {
+          pins.enable <: 0;
+        }
         break;
 
-      case right_motor :> signed right_speed:
-        printf("RIGHT = %d\n", right_speed);
+      case t when timerafter(time) :> void:
+        time += PWM_SCALE*(state ? duty : (PWM_RESOLUTION-duty));
+        pins.enable <: state;
+        state = !state;
 
         break;
     }
@@ -42,13 +69,7 @@ void motor(chanend left_motor, chanend right_motor, chanend duty) {
 }
 
 void logic(chanend left_motor, chanend right_motor) {
-  left_motor <: -12;
-  right_motor <: 12;
+  left_motor <: -PWM_PERCENT(25);
+  right_motor <: PWM_PERCENT(50);
 }
 
-void pwm(out port pins[], unsigned pins_size, clock sync, chanend speed) {
-  configure_clock_rate(sync, 100, 1);
-  start_clock(sync);
-
-  printstrln("PWM INIT");
-}
