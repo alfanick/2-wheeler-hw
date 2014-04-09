@@ -76,5 +76,20 @@ void motor(chanend velocity, struct motor_pins &pins) {
 void logic(chanend left_motor, chanend right_motor) {
   left_motor <: -PWM_PERCENT(25);
   right_motor <: PWM_PERCENT(50);
+
+  timer t;
+  unsigned time;
+
+  t :> time;
+
+  unsigned state = 0;
+
+  while (1) {
+    t when timerafter(time) :> void;
+    time += 1000 * XS1_TIMER_KHZ;
+
+    left_motor <: PWM_PERCENT(state ? 25 : 75);
+    state = !state;
+  }
 }
 
