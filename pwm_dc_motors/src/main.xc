@@ -1,8 +1,8 @@
 #include <xs1.h>
 #include <platform.h>
 
-#define PWM_SCALE 4
-#define PWM_RESOLUTION 4096
+#define PWM_SCALE 2
+#define PWM_RESOLUTION 8192
 #define PWM_PERCENT(x) ( (x) * PWM_RESOLUTION / 100 )
 
 struct motor_pins {
@@ -26,13 +26,13 @@ int main() {
   chan left_motor, right_motor;
 
   par {
-    on tile[0] : logic(left_motor, right_motor);
-    on tile[0] :
-      [[combine]]
-      par {
-        motor(left_motor, motors[0]);
-        motor(right_motor, motors[1]);
-      }
+    logic(left_motor, right_motor);
+
+    [[combine]]
+    par {
+      motor(left_motor, motors[0]);
+      motor(right_motor, motors[1]);
+    }
   }
 
   return 0;
