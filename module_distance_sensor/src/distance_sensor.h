@@ -11,11 +11,11 @@ struct distance_sensor_t {
 
 interface distance_sensor_i {
   unsigned read();
+  void frequency(unsigned freq);
 };
 
 typedef interface distance_sensor_i client distance_sensor_client;
 
-[[combinable]]
 void distance_sensor(interface distance_sensor_i server i, struct distance_sensor_t &pin);
 
 
