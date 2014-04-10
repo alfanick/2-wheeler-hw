@@ -11,6 +11,7 @@ struct distance_sensor_t {
 
 interface distance_sensor_i {
   unsigned read();
+  unsigned read_raw();
   void frequency(unsigned freq);
 };
 

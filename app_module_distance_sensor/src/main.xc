@@ -9,7 +9,7 @@ struct distance_sensor_t distance_sensors[2] = {
   { XS1_PORT_1M, XS1_PORT_1L }
 };
 
-void logic(interface distance_sensor_i client left, interface distance_sensor_i client right);
+void logic(interface distance_sensor_i client front, interface distance_sensor_i client rear);
 
 int main() {
   interface distance_sensor_i front_distance, rear_distance;
@@ -27,17 +27,17 @@ int main() {
   return 0;
 }
 
-void logic(interface distance_sensor_i client left, interface distance_sensor_i client right) {
-  left.frequency(10);
-  right.frequency(100);
+void logic(interface distance_sensor_i client front, interface distance_sensor_i client rear) {
+  front.frequency(10);
+  rear.frequency(10);
 
   timer t; unsigned time;
   t :> time;
   while (1) {
     t when timerafter(time) :> void;
     time += 1000 * XS1_TIMER_KHZ;
-    printuintln(left.read());
-    printuintln(right.read());
+    printuintln(front.read());
+    printuintln(rear.read());
     printstrln("");
   }
 }
