@@ -17,9 +17,10 @@ int main() {
   par {
     logic(front_distance, rear_distance);
 
+[[combine]] par {
     distance_sensor(front_distance, distance_sensors[0]);
     distance_sensor(rear_distance, distance_sensors[1]);
-  }
+}  }
 
   return 0;
 }
@@ -34,5 +35,7 @@ void logic(interface distance_sensor_i client left, interface distance_sensor_i 
     t when timerafter(time) :> void;
     time += 1000 * XS1_TIMER_KHZ;
     printuintln(left.read());
+    printuintln(right.read());
+    printstrln("");
   }
 }

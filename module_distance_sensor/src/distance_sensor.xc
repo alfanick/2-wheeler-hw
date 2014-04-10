@@ -2,6 +2,7 @@
 
 #include <print.h>
 
+[[combinable]]
 void distance_sensor(interface distance_sensor_i server i, struct distance_sensor_t &pin) {
   timer t;
   unsigned time;
@@ -41,19 +42,15 @@ void distance_sensor(interface distance_sensor_i server i, struct distance_senso
         time += delta;
         break;
 
-      case measure => pin.echo :> unsigned new_state:
+      case measure => pin.echo when pinsneq(state) :> state:
         // end of wave
-        if (!new_state && state) {
+        if (!state) {
           t :> current_time;
           last_distance = ((current_time - measure) / (XS1_TIMER_MHZ / 10)) * 34 / 500;
           measure = 0;
-        } else
-        // start
-        if (new_state && !state) {
+        } else {
           t :> measure;
         }
-
-        state = new_state;
         break;
     }
   }
