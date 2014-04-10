@@ -19,7 +19,6 @@ void distance_sensor(interface distance_sensor_i server i, struct distance_senso
     select {
       case i.frequency(unsigned freq):
         delta = 1000 * XS1_TIMER_KHZ / freq;
-
         break;
 
       case i.read() -> unsigned distance:
@@ -46,8 +45,8 @@ void distance_sensor(interface distance_sensor_i server i, struct distance_senso
         // end of wave
         if (!state) {
           t :> current_time;
-          last_distance = ((current_time - measure) / (XS1_TIMER_MHZ / 10)) * 34 / 500;
           measure = 0;
+          last_distance = ((current_time - measure) / (XS1_TIMER_MHZ / 10)) * 34 / 500;
         } else {
           t :> measure;
         }

@@ -17,10 +17,12 @@ int main() {
   par {
     logic(front_distance, rear_distance);
 
-[[combine]] par {
-    distance_sensor(front_distance, distance_sensors[0]);
-    distance_sensor(rear_distance, distance_sensors[1]);
-}  }
+    [[combine]]
+    par {
+      distance_sensor(front_distance, distance_sensors[0]);
+      distance_sensor(rear_distance, distance_sensors[1]);
+    }
+  }
 
   return 0;
 }
