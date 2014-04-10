@@ -6,7 +6,7 @@
 void distance_sensor(interface distance_sensor_i server i, struct distance_sensor_t &pin) {
   timer t;
   unsigned time;
-  signed delta = 1000 * XS1_TIMER_KHZ;
+  unsigned delta = 1000 * XS1_TIMER_KHZ;
   unsigned last_distance = -1;
   unsigned current_time;
   unsigned state = 0;
