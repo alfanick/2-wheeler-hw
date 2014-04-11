@@ -1,0 +1,3 @@
+[submodule "sc_spi"]
+	path = sc_spi
+	url = https://github.com/xcore/sc_spi.git
