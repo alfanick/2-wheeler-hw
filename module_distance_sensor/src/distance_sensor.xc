@@ -22,7 +22,7 @@ void distance_sensor(interface distance_sensor_i server i, struct distance_senso
         break;
 
       case i.read() -> unsigned distance:
-        distance = (last_raw / (XS1_TIMER_MHZ / 10)) * 34 / 500;
+        distance = last_raw / 2 * 340 / XS1_TIMER_KHZ;
         break;
 
       case i.read_raw() -> unsigned time:

@@ -28,8 +28,8 @@ int main() {
 }
 
 void logic(interface distance_sensor_i client front, interface distance_sensor_i client rear) {
-  front.frequency(10);
-  rear.frequency(10);
+  front.frequency(100);
+  rear.frequency(100);
 
   timer t; unsigned time;
   t :> time;
