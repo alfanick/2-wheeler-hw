@@ -1,3 +1,3 @@
-[submodule "sc_spi"]
-	path = sc_spi
-	url = https://github.com/xcore/sc_spi.git
+[submodule "sc_i2c"]
+	path = sc_i2c
+	url = https://github.com/xcore/sc_i2c.git
