@@ -18,7 +18,7 @@ void distance_sensor(interface distance_sensor_i server i, struct distance_senso
   while (1) {
     select {
       case i.frequency(unsigned freq):
-        delta = freq == 0 ? -1 : (1000 * XS1_TIMER_KHZ / freq);
+        delta = freq == 0 ? -1 : (XS1_TIMER_HZ / freq);
         break;
 
       case i.read() -> unsigned distance:
