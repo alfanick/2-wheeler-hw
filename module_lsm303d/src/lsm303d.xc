@@ -28,40 +28,52 @@ void lsm303d(lsm303d_t &pin) {
   data[0] = 0b00000000;
   i2c_master_write_reg(0b0011101, 0x26, data, 1, pin);
 
-  while (1) {
-    do {
-      data[0] = i2c_master_read_reg(0b0011101, 0x27, data, 1, pin);
-    } while ((data[0] & (0b00000111)) == 0);
 
-    i2c_master_read_reg(0b0011101, 0x28 | (1 << 7), data, 6, pin);
+  unsigned time;
+  timer t;
+  int counter = 0;
 
-    short x, y, z;
+  unsigned run = 1;
+  t :> time;
+  time += 1000 * XS1_TIMER_KHZ;
 
-    x = ((data[1] << 8 | data[0]));
-    y = ((data[3] << 8 | data[2]));
-    z = ((data[5] << 8 | data[4]));
+  while (run) {
+    select {
+      case t when timerafter(time) :> void:
+        run = 0;
+        break;
 
-    printstrln("ACC:");
-    printintln(x);
-    printintln(y);
-    printintln(z);
+      default:
+        i2c_master_read_reg(0b0011101, 0x28 | (1 << 7), data, 6, pin);
 
-    do {
-      data[0] = i2c_master_read_reg(0b0011101, 0x07, data, 1, pin);
-    } while ((data[0] & (0b00000111)) == 0);
+        short x, y, z;
 
-    i2c_master_read_reg(0b0011101, 0x08 | (1 << 7), data, 6, pin);
+        x = ((data[1] << 8 | data[0]));
+        y = ((data[3] << 8 | data[2]));
+        z = ((data[5] << 8 | data[4]));
 
-    short mx, my, mz;
+        //printstrln("ACC:");
+        //printintln(x);
+        //printintln(y);
+        //printintln(z);
 
-    mx = ((data[1] << 8 | data[0]));
-    my = ((data[3] << 8 | data[2]));
-    mz = ((data[5] << 8 | data[4]));
+        i2c_master_read_reg(0b0011101, 0x08 | (1 << 7), data, 6, pin);
 
-    printstrln("MAG:");
-    printintln(mx);
-    printintln(my);
-    printintln(mz);
-    printstrln("");
+        short mx, my, mz;
+
+        mx = ((data[1] << 8 | data[0]));
+        my = ((data[3] << 8 | data[2]));
+        mz = ((data[5] << 8 | data[4]));
+
+        // printstrln("MAG:");
+        // printintln(mx);
+        // printintln(my);
+        // printintln(mz);
+        // printstrln("");
+        counter++;
+        break;
+    }
   }
+
+  printintln(counter);
 }
