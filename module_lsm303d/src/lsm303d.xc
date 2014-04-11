@@ -39,11 +39,14 @@ void lsm303d(lsm303d_t &pin) {
 
   while (run) {
     select {
-      case t when timerafter(time) :> void:
-        run = 0;
-        break;
-
       default:
+        i2c_master_read_reg(0b0011101, 0x05 | (1 << 7), data, 2, pin);
+
+        short t = data[1] << 8 | data[0];
+
+        printstrln("TEMP:");
+        printintln(t);
+
         i2c_master_read_reg(0b0011101, 0x28 | (1 << 7), data, 6, pin);
 
         short x, y, z;
@@ -52,10 +55,10 @@ void lsm303d(lsm303d_t &pin) {
         y = ((data[3] << 8 | data[2]));
         z = ((data[5] << 8 | data[4]));
 
-        //printstrln("ACC:");
-        //printintln(x);
-        //printintln(y);
-        //printintln(z);
+        printstrln("ACC:");
+        printintln(x);
+        printintln(y);
+        printintln(z);
 
         i2c_master_read_reg(0b0011101, 0x08 | (1 << 7), data, 6, pin);
 
@@ -65,11 +68,11 @@ void lsm303d(lsm303d_t &pin) {
         my = ((data[3] << 8 | data[2]));
         mz = ((data[5] << 8 | data[4]));
 
-        // printstrln("MAG:");
-        // printintln(mx);
-        // printintln(my);
-        // printintln(mz);
-        // printstrln("");
+        printstrln("MAG:");
+        printintln(mx);
+        printintln(my);
+        printintln(mz);
+        printstrln("");
         counter++;
         break;
     }
