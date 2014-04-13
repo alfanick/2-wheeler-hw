@@ -46,7 +46,7 @@ void logic(lsm303d_client lsm) {
         lsm.magnetometer(mag);
         printf("MAG:     %d %d %d\n", mag.x, mag.y, mag.z);
 
-        time += 1000 * XS1_TIMER_KHZ;
+        time += 500 * XS1_TIMER_KHZ;
         break;
     }
   }

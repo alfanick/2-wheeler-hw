@@ -47,10 +47,7 @@ inline void lsm303d_read_magnetometer(lsm303d_t &pin, vector3d &v) {
 }
 
 inline int median(int a, int b, int c) {
-  int mx, mn;
-  mx = MAX(MAX(a, b), c);
-  mn = MIN(MIN(a, b), c);
-  return a ^ b ^ c ^ mx ^ mn;
+  return a ^ b ^ c ^ MAX(MAX(a, b), c) ^ MIN(MIN(a, b), c);
 }
 
 inline vector3d median_vector3d(vector3d a, vector3d b, vector3d c) {
@@ -90,13 +87,14 @@ void lsm303d(interface lsm303d_i server i, lsm303d_t &pin) {
         break;
 
       case t when timerafter(time) :> void:
+        time += 100 * XS1_TIMER_KHZ;
+
         lsm303d_read_accelerometer(pin, acc_buffer[acc_position++]);
         lsm303d_read_magnetometer(pin, mag_buffer[mag_position++]);
 
         acc_position %= 3;
         mag_position %= 3;
 
-        time += 100 * XS1_TIMER_KHZ;
         break;
     }
   }
