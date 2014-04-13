@@ -1,5 +1,6 @@
 #include "lsm303d.h"
 
+#include <stdio.h>
 void lsm303d_init(lsm303d_t &pin) {
   unsigned char data[1];
 
@@ -22,7 +23,7 @@ void lsm303d_init(lsm303d_t &pin) {
   i2c_master_write_reg(LSM303D_ADDRESS, 0x25, data, 1, pin);
 
   // enable mag
-  data[0] = 0b00000000;
+  data[0] = 0b00100000;
   i2c_master_write_reg(LSM303D_ADDRESS, 0x26, data, 1, pin);
 
 }
@@ -47,28 +48,40 @@ inline void lsm303d_read_magnetometer(lsm303d_t &pin, vector3d &v) {
 void lsm303d(interface lsm303d_i server i, lsm303d_t &pin) {
   unsigned time;
   timer t;
-  vector3d acc, mag;
+  vector3d last_acc = {0,0,0}, last_mag = {0,0,0},
+           filtered_acc = {0,0,0}, filtered_mag = {0,0,0};
+
+  vector3d mag_offset;
 
   lsm303d_init(pin);
-
+printf("foobar\n");
+  lsm303d_read_vector(pin, 0x16, mag_offset);
+  printf("MAG_OFF: %d %d %d\n", mag_offset.x, mag_offset.y, mag_offset.z);
   t :> time;
 
   while (1) {
     select {
-      case i.accelerometer_raw() -> vector3d v:
+      case i.accelerometer_raw(vector3d &v):
+        v = last_acc;
         break;
-      case i.accelerometer() -> vector3d v:
-        v = acc;
+      case i.accelerometer(vector3d &v):
+        v = filtered_acc;
         break;
-      case i.magnetometer_raw() -> vector3d v:
+      case i.magnetometer_raw(vector3d &v):
+        v = last_mag;
         break;
-      case i.magnetometer() -> vector3d v:
-        v = mag;
+      case i.magnetometer(vector3d &v):
+        v = filtered_mag;
         break;
 
       case t when timerafter(time) :> void:
-        lsm303d_read_accelerometer(pin, acc);
-        lsm303d_read_magnetometer(pin, mag);
+        lsm303d_read_accelerometer(pin, last_acc);
+        lsm303d_read_magnetometer(pin, last_mag);
+
+        printf("ACCR: %d %d %d\n", last_acc.x, last_acc.y, last_acc.z);
+
+        filtered_acc = last_acc;
+        filtered_mag = last_mag;
 
         time += 10 * XS1_TIMER_KHZ;
         break;

@@ -17,11 +17,11 @@ typedef struct vector3d {
 } vector3d;
 
 interface lsm303d_i {
-  vector3d accelerometer_raw();
-  vector3d accelerometer();
+  void accelerometer_raw(vector3d &v);
+  void accelerometer(vector3d &v);
 
-  vector3d magnetometer_raw();
-  vector3d magnetometer();
+  void magnetometer_raw(vector3d &v);
+  void magnetometer(vector3d &v);
 };
 
 typedef interface lsm303d_i client lsm303d_client;
