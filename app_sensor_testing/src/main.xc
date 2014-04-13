@@ -1,9 +1,13 @@
 #include <xs1.h>
 #include <platform.h>
-#include <stdio.h>
+
+#define DEBUG_PRINT_ENABLE 1
+
+#include <debug_print.h>
 
 #include <lsm303d.h>
 #include <distance_sensor.h>
+
 
 lsm303d_t lsm303d_pin = {
   XS1_PORT_1I,
@@ -49,17 +53,17 @@ void logic(lsm303d_client lsm, distance_sensor_client front, distance_sensor_cli
     select {
       case t when timerafter(time) :> void:
         lsm.accelerometer_raw(acc);
-        printf("ACC_RAW: %d %d %d\n", acc.x, acc.y, acc.z);
+        debug_printf("ACC_RAW: %d %d %d\n", acc.x, acc.y, acc.z);
         lsm.accelerometer(acc);
-        printf("ACC:     %d %d %d\n", acc.x, acc.y, acc.z);
+        debug_printf("ACC:     %d %d %d\n", acc.x, acc.y, acc.z);
 
         lsm.magnetometer_raw(mag);
-        printf("MAG_RAW: %d %d %d\n", mag.x, mag.y, mag.z);
+        debug_printf("MAG_RAW: %d %d %d\n", mag.x, mag.y, mag.z);
         lsm.magnetometer(mag);
-        printf("MAG:     %d %d %d\n", mag.x, mag.y, mag.z);
+        debug_printf("MAG:     %d %d %d\n", mag.x, mag.y, mag.z);
 
-        printf("FRONT:   %d\n", front.read());
-        printf("REAR:    %d\n\n", rear.read());
+        debug_printf("FRONT:   %d\n", front.read());
+        debug_printf("REAR:    %d\n\n", rear.read());
 
         time += 500 * XS1_TIMER_KHZ;
         break;
