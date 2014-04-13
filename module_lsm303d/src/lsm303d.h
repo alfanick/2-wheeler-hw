@@ -32,6 +32,7 @@ inline void lsm303d_read_vector(lsm303d_t &pin, unsigned char reg, vector3d &v);
 inline void lsm303d_read_accelerometer(lsm303d_t &pin, vector3d &v);
 inline void lsm303d_read_magnetometer(lsm303d_t &pin, vector3d &v);
 
+[[combinable]]
 void lsm303d(interface lsm303d_i server i, lsm303d_t &pin);
 
 #endif
