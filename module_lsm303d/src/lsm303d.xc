@@ -1,7 +1,5 @@
 #include "lsm303d.h"
 
-#include <print.h>
-
 void lsm303d_init(lsm303d_t &pin) {
   unsigned char data[1];
 
@@ -46,44 +44,35 @@ inline void lsm303d_read_magnetometer(lsm303d_t &pin, vector3d &v) {
   lsm303d_read_vector(pin, 0x08, v);
 }
 
-void lsm303d(lsm303d_t &pin) {
-  vector3d acc, mag;
+void lsm303d(interface lsm303d_i server i, lsm303d_t &pin) {
   unsigned time;
   timer t;
-  int counter = 0;
-
-  unsigned run = 1;
+  vector3d acc, mag;
 
   lsm303d_init(pin);
 
   t :> time;
-  time += 1000 * XS1_TIMER_KHZ;
 
-  while (run) {
+  while (1) {
     select {
-      case t when timerafter(time) :> void:
-        run = 0;
+      case i.accelerometer_raw() -> vector3d v:
+        break;
+      case i.accelerometer() -> vector3d v:
+        v = acc;
+        break;
+      case i.magnetometer_raw() -> vector3d v:
+        break;
+      case i.magnetometer() -> vector3d v:
+        v = mag;
         break;
 
-      default:
+      case t when timerafter(time) :> void:
         lsm303d_read_accelerometer(pin, acc);
-
-/*        printstrln("ACC:");
-        printintln(acc.x);
-        printintln(acc.y);
-        printintln(acc.z);
-*/
         lsm303d_read_magnetometer(pin, mag);
-/*
-        printstrln("MAG:");
-        printintln(mag.x);
-        printintln(mag.y);
-        printintln(mag.z);
-        printstrln("");
-  */      counter++;
+
+        time += 10 * XS1_TIMER_KHZ;
         break;
     }
   }
 
-  printintln(counter);
 }

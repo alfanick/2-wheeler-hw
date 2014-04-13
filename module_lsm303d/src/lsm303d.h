@@ -9,7 +9,6 @@
 
 typedef r_i2c lsm303d_t;
 
-void lsm303d(lsm303d_t &pin);
 
 typedef struct vector3d {
   short x;
@@ -18,19 +17,21 @@ typedef struct vector3d {
 } vector3d;
 
 interface lsm303d_i {
-  vector3d last_accelerometer();
-  vector3d average_accelerometer();
+  vector3d accelerometer_raw();
   vector3d accelerometer();
 
-  vector3d last_magnetometer();
-  vector3d average_magnetometer();
+  vector3d magnetometer_raw();
   vector3d magnetometer();
 };
+
+typedef interface lsm303d_i client lsm303d_client;
 
 void lsm303d_init(lsm303d_t &pin);
 inline void lsm303d_read_vector(lsm303d_t &pin, unsigned char reg, vector3d &v);
 
 inline void lsm303d_read_accelerometer(lsm303d_t &pin, vector3d &v);
 inline void lsm303d_read_magnetometer(lsm303d_t &pin, vector3d &v);
+
+void lsm303d(interface lsm303d_i server i, lsm303d_t &pin);
 
 #endif

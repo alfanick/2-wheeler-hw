@@ -17,7 +17,7 @@ USED_MODULES = module_i2c_master module_lsm303d
 # If the variable XCC_MAP_FLAGS is set it overrides the flags passed to
 # xcc for the final link (mapping) stage.
 XCC_FLAGS_Debug   = -O0 -report -g
-XCC_FLAGS_Release = -O3 -report -g
+XCC_FLAGS_Release = -O3 -report
 
 # The VERBOSE variable, if set to 1, enables verbose output from the make system.
 VERBOSE = 0
