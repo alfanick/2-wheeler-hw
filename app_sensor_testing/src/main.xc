@@ -29,10 +29,11 @@ int main() {
   par {
     logic(lsm303d_interface, front_distance, rear_distance);
 
-    lsm303d(lsm303d_interface, lsm303d_pin);
 
     [[combine]]
     par {
+      lsm303d(lsm303d_interface, lsm303d_pin);
+
       distance_sensor(front_distance, distance_sensors[0]);
       distance_sensor(rear_distance, distance_sensors[1]);
     }
