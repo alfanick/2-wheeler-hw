@@ -1,17 +1,15 @@
 #include "lsm303d.h"
 
-#include <stdio.h>
 void lsm303d_init(lsm303d_t &pin) {
   unsigned char data[1];
-
   i2c_master_init(pin);
 
   // enable acc
   data[0] = 0b10100111;
   i2c_master_write_reg(LSM303D_ADDRESS, 0x20, data, 1, pin);
 
-  // acc = 8g
-  data[0] = 0b00011000;
+  // acc = 2g
+  data[0] = 0b00000000;
   i2c_master_write_reg(LSM303D_ADDRESS, 0x21, data, 1, pin);
 
   // temp and high res
@@ -52,11 +50,7 @@ void lsm303d(interface lsm303d_i server i, lsm303d_t &pin) {
            filtered_acc = {0,0,0}, filtered_mag = {0,0,0};
 
   vector3d mag_offset;
-
   lsm303d_init(pin);
-printf("foobar\n");
-  lsm303d_read_vector(pin, 0x16, mag_offset);
-  printf("MAG_OFF: %d %d %d\n", mag_offset.x, mag_offset.y, mag_offset.z);
   t :> time;
 
   while (1) {
@@ -78,12 +72,10 @@ printf("foobar\n");
         lsm303d_read_accelerometer(pin, last_acc);
         lsm303d_read_magnetometer(pin, last_mag);
 
-        printf("ACCR: %d %d %d\n", last_acc.x, last_acc.y, last_acc.z);
-
         filtered_acc = last_acc;
         filtered_mag = last_mag;
 
-        time += 10 * XS1_TIMER_KHZ;
+        time += 100 * XS1_TIMER_KHZ;
         break;
     }
   }

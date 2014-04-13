@@ -27,13 +27,13 @@ int main() {
 void logic(lsm303d_client lsm) {
   timer t; unsigned time;
   vector3d acc, mag;
-/*
+
   t :> time;
   while (1) {
     select {
       case t when timerafter(time) :> void:
         lsm.accelerometer(acc);
-        printf("ACC: %d %d %d\n", acc.x >> 4, acc.y >> 4, acc.z >> 4);
+        printf("ACC: %d %d %d\n", acc.x, acc.y, acc.z);
 
         lsm.magnetometer(mag);
         printf("MAG: %d %d %d\n", mag.x, mag.y, mag.z);
@@ -41,5 +41,5 @@ void logic(lsm303d_client lsm) {
         time += 1000 * XS1_TIMER_KHZ;
         break;
     }
-  }*/
+  }
 }
