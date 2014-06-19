@@ -4,32 +4,18 @@
 
 #include <debug_print.h>
 
-#include <distance_sensor.h>
-#include <lsm303d.h>
-
-distance_sensor_t distance_sensors[2] = {
-  { FRONT_DISTANCE_SENSOR_TRIGGER, FRONT_DISTANCE_SENSOR_ECHO },
-  {  REAR_DISTANCE_SENSOR_TRIGGER,  REAR_DISTANCE_SENSOR_ECHO }
-};
-
-lsm303d_t lsm303d_pin = {
-  MOTION_SENSOR_CLOCK,
-  MOTION_SENSOR_DATA,
-  250
-};
-
 void logic(lsm303d_client lsm, distance_sensor_client front, distance_sensor_client rear);
 
 int main() {
   interface distance_sensor_i front_distance, rear_distance;
-  interface lsm303d_i lsm303d_interface;
+  interface lsm303d_i motion;
 
   par {
-    logic(lsm303d_interface, front_distance, rear_distance);
+    logic(motion, front_distance, rear_distance);
 
     [[combine]]
     par {
-      lsm303d(lsm303d_interface, lsm303d_pin);
+      lsm303d(motion, motion_sensor);
       distance_sensor(front_distance, distance_sensors[0]);
       distance_sensor(rear_distance, distance_sensors[1]);
     }
