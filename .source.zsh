@@ -1,7 +1,8 @@
-export XMOS_TOOL_PATH=/Applications/XMOS_xTIMEcomposer_Community_13.0.2;
+#!/bin/bash
+export XMOS_TOOL_PATH=/Applications/XMOS_xTIMEcomposer_Community_13.1.0;
 export installpath=$XMOS_TOOL_PATH # Deprecated, please use XMOS_TOOL_PATH
 export XMOS_HOME=$HOME/.xmos
-export PATH=$XMOS_TOOL_PATH/bin:$XMOS_TOOL_PATH/xtimecomposer_bin/xtimecomposer.app/Contents/MacOS:$PATH;
+export PATH=$XMOS_TOOL_PATH/bin:$XMOS_TOOL_PATH/xtimecomposer_bin/xtimecomposer.app/Contents/MacOS:$XMOS_TOOL_PATH/arm_toolchain/bin:$PATH;
 export LD_LIBRARY_PATH=$XMOS_TOOL_PATH/lib:$LD_LIBRARY_PATH;
 export DYLD_LIBRARY_PATH=$XMOS_TOOL_PATH/lib:$DYLD_LIBRARY_PATH;
 export XCC_C_INCLUDE_PATH=$XMOS_TOOL_PATH/target/include:$XMOS_TOOL_PATH/target/include/gcc
@@ -19,3 +20,7 @@ export PYTHON_VERBOSE="warning"
 export XMOS_CACHE_PATH=$XMOS_HOME/cache
 export XMOS_REPO_PATH=$XMOS_HOME/repos
 export XMOS_MAKE_PATH=${XMOS_TOOL_PATH// /\\ }/build
+export XCC_EFM32GG_C_INCLUDE_PATH=$XMOS_TOOL_PATH/arm_toolchain/arm-none-eabi/opt/emlib/inc:$XMOS_TOOL_PATH/arm_toolchain/arm-none-eabi/opt/Device/EnergyMicro/EFM32GG/Include/:$XMOS_TOOL_PATH/arm_toolchain/arm-none-eabi/opt/CMSIS/Include/
+export XCC_EFM32GG_XC_INCLUDE_PATH=$XMOS_TOOL_PATH/arm_toolchain/arm-none-eabi/opt/emlib/inc:$XMOS_TOOL_PATH/arm_toolchain/arm-none-eabi/opt/Device/EnergyMicro/EFM32GG/Include/:$XMOS_TOOL_PATH/arm_toolchain/arm-none-eabi/opt/CMSIS/Include/
+export XCC_EFM32GG_CPLUS_INCLUDE_PATH=$XMOS_TOOL_PATH/arm_toolchain/arm-none-eabi/opt/emlib/inc:$XMOS_TOOL_PATH/arm_toolchain/arm-none-eabi/opt/Device/EnergyMicro/EFM32GG/Include/:$XMOS_TOOL_PATH/arm_toolchain/arm-none-eabi/opt/CMSIS/Include/
+
