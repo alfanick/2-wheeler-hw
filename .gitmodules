@@ -1,3 +1,9 @@
-[submodule "sc_i2c"]
-	path = sc_i2c
+[submodule "startkit_examples"]
+	path = startkit_examples
+	url = https://github.com/alfanick/startkit_examples.git
+[submodule "deps/sc_i2c"]
+	path = deps/sc_i2c
 	url = https://github.com/xcore/sc_i2c.git
+[submodule "deps/modules"]
+	path = deps/modules
+	url = https://github.com/alfanick/startkit_examples.git
