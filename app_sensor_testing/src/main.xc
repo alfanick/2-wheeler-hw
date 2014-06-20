@@ -47,7 +47,7 @@ void logic(lsm303d_client lsm, distance_sensor_client front, distance_sensor_cli
     select {
 
      case t when timerafter(time) :> void:
-//        adc.trigger();
+        adc.trigger();
         debug_printf("BATTERY: %dmV\n", battery_voltage);
 
         lsm.accelerometer_raw(acc);
