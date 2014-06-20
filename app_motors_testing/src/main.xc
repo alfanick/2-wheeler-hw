@@ -21,8 +21,8 @@ int main() {
 void logic(motors_client motors) {
   timer t; unsigned time;
 
-  unsigned speed = 0;
-  unsigned step = +1;
+  signed speed = -100;
+  unsigned step = -10;
 
   motors.left(0);
   motors.right(0);
@@ -33,15 +33,19 @@ void logic(motors_client motors) {
     time += 500 * XS1_TIMER_KHZ;
     t when timerafter(time) :> void;
 
-    if (speed == 100)
-      step = -1; else
-    if (speed == 0)
-      step = +1;
+    if (speed == 100 || speed == -100)
+      step = -step;
 
     speed += step;
 
     motors.left(PWM_PERCENT(speed));
     motors.right(PWM_PERCENT(speed));
+
+    time += 5000 * XS1_TIMER_KHZ;
+    t when timerafter(time) :> void;
+
+    motors.left(0);
+    motors.right(0);
   }
 
 }
