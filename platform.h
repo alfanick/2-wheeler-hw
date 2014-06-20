@@ -10,8 +10,8 @@
 #define             MOTION_SENSOR_CLOCK            XS1_PORT_1G
 #define              MOTION_SENSOR_DATA            XS1_PORT_1H
 
-#define              BLUETOOTH_TRANSMIT            XS1_PORT_1O
-#define               BLUETOOTH_RECEIVE            XS1_PORT_1P
+#define              BLUETOOTH_TRANSMIT            XS1_PORT_1P
+#define               BLUETOOTH_RECEIVE            XS1_PORT_1O
 
 #define              LEFT_MOTOR_DISABLE            XS1_PORT_1E
 #define               LEFT_MOTOR_STATUS            XS1_PORT_1M

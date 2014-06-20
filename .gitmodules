@@ -10,3 +10,6 @@
 [submodule "deps/sw_startkit_examples"]
 	path = deps/sw_startkit_examples
 	url = https://github.com/xcore/sw_startkit_examples.git
+[submodule "deps/sc_uart"]
+	path = deps/sc_uart
+	url = https://github.com/xcore/sc_uart.git
