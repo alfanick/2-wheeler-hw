@@ -56,8 +56,7 @@ void logic(lsm303d_client lsm, distance_sensor_client front, distance_sensor_cli
   time += 500 * XS1_TIMER_KHZ;
   while (1) {
     select {
-
-     case t when timerafter(time) :> void:
+      case t when timerafter(time) :> void:
         adc.trigger();
         debug_printf("BATTERY: %dmV\n", battery_voltage);
 
