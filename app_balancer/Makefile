@@ -9,15 +9,15 @@ TARGET = STARTKIT
 APP_NAME =
 
 # The USED_MODULES variable lists other module used by the application.
-USED_MODULES = module_logging module_distance_sensor
+USED_MODULES = module_logging module_distance_sensor module_lsm303d module_i2c_master module_startkit_adc module_motor_pair
 
 # The flags passed to xcc when building the application
 # You can also set the following to override flags for a particular language:
 # XCC_XC_FLAGS, XCC_C_FLAGS, XCC_ASM_FLAGS, XCC_CPP_FLAGS
 # If the variable XCC_MAP_FLAGS is set it overrides the flags passed to
 # xcc for the final link (mapping) stage.
-XCC_FLAGS_Debug   = -O0 -report -g
-XCC_FLAGS_Release = -O3 -report -g
+XCC_FLAGS_Debug   = -O0 -report -g -fxscope
+XCC_FLAGS_Release = -O3 -report -g -fxscope
 
 # The VERBOSE variable, if set to 1, enables verbose output from the make system.
 VERBOSE = 0

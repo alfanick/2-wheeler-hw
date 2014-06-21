@@ -1,6 +1,6 @@
 #include "../../platform.h"
 
-#define DEBUG_PRINT_ENABLE 1
+//#define DEBUG_PRINT_ENABLE 1
 
 #include <debug_print.h>
 #include <startkit_adc.h>
@@ -50,7 +50,7 @@ void logic(lsm303d_client lsm, distance_sensor_client front, distance_sensor_cli
   front.frequency(13);
   rear.frequency(17);
 
-  motors.left(PWM_PERCENT(30));
+  motors.left(-PWM_PERCENT(100));
 
   t :> time;
   time += 500 * XS1_TIMER_KHZ;
