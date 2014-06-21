@@ -13,3 +13,6 @@
 [submodule "deps/sc_uart"]
 	path = deps/sc_uart
 	url = https://github.com/xcore/sc_uart.git
+[submodule "deps/sc_util"]
+	path = deps/sc_util
+	url = https://github.com/xcore/sc_util.git
