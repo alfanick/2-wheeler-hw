@@ -1,10 +1,6 @@
 #include "../../platform.h"
 
-#define DEBUG_PRINT_ENABLE 1
-
-#include <debug_print.h>
-
-void logic(motors_client motors);
+#include "logic.h"
 
 int main() {
   interface motors_i motors;
@@ -21,9 +17,4 @@ int main() {
   }
 
   return 0;
-}
-
-void logic(motors_client motors) {
-  motors.left(PWM_PERCENT(30));
-  motors.right(PWM_PERCENT(30));
 }
