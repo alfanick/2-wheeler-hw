@@ -3,6 +3,8 @@
 #define DEBUG_PRINT_ENABLE 0
 #include <debug_print.h>
 
+#define ABS(x) ((x) > 0 ? (x) : -(x))
+
 [[combinable]]
 void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motors_client motors) {
   timer t; unsigned time;
@@ -20,6 +22,8 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
         motion.accelerometer(acc);
         debug_printf("ACC: %d %d %d\n", acc.x, acc.y, acc.z);
 
+        const unsigned ds = ABS(acc.z) > 3000 ? 50 : 25;
+
         if (acc.x > -16340) {
           if (acc.z > 8000 || acc.z < -8000) {
             motors.left(0);
@@ -27,13 +31,13 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
           } else
           if (acc.z > 0) {
             debug_printf("wywala sie do przodu\n");
-            motors.left(PWM_PERCENT(50));
-            motors.right(PWM_PERCENT(50));
+            motors.left(PWM_PERCENT(ds));
+            motors.right(PWM_PERCENT(ds));
           } else
           if (acc.z < 0) {
             debug_printf("wywala sie do tylu\n");
-            motors.left(PWM_PERCENT(-50));
-            motors.right(PWM_PERCENT(-50));
+            motors.left(-PWM_PERCENT(ds));
+            motors.right(-PWM_PERCENT(ds));
           }
         } else {
           debug_printf("stoi!\n");
