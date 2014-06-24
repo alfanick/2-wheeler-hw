@@ -2,6 +2,7 @@
 
 #define DEBUG_PRINT_ENABLE 0
 #include <debug_print.h>
+#include <math.h>
 
 #define ABS(x) ((x) > 0 ? (x) : -(x))
 
@@ -10,12 +11,16 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
   timer t; unsigned time;
   vector3d acc;
   unsigned balancing = 0;
+  int speed;
+
+  float correction, error, total_error = 0, last_error = 0;
+  const float Kp = 600.0, Ki = 0.0, Kd = 0.0;
 
   motors.left(0);
   motors.right(0);
 
   t :> time;
-  time += 4*XS1_TIMER_KHZ;
+  time += 10*XS1_TIMER_KHZ;
 
   while (1) {
     select {
@@ -38,27 +43,36 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
       case balancing => t when timerafter(time) :> void:
         motion.accelerometer(acc);
 
-        const unsigned ds = ABS(acc.z) > 3000 ? 50 : 25;
-
-        if (acc.x > -16340) {
-          if (acc.z > 8000 || acc.z < -8000) {
-            motors.left(0);
-            motors.right(0);
-          } else
-          if (acc.z > 0) {
-            motors.left(PWM_PERCENT(ds));
-            motors.right(PWM_PERCENT(ds));
-          } else
-          if (acc.z < 0) {
-            motors.left(-PWM_PERCENT(ds));
-            motors.right(-PWM_PERCENT(ds));
-          }
-        } else {
+        if (acc.z < -12000 || acc.z > 12000) {
           motors.left(0);
           motors.right(0);
+          break;
         }
 
-        t :> time;
+
+        error = sqrt(acc.y * acc.y + acc.x * acc.x);
+        error = acc.z / error;
+        error = atan(error);
+
+        debug_printf("%d %d %d\n", acc.x, acc.y, acc.z);
+
+        correction = Kp * error +
+                     Ki * total_error +
+                     Kd * (error - last_error);
+        total_error += error;
+        last_error = error;
+
+        debug_printf("%d\n", (int)(error));
+
+        speed = (correction > PWM_RESOLUTION) ? PWM_RESOLUTION :
+                (correction < -PWM_RESOLUTION) ? -PWM_RESOLUTION :
+                correction;
+        debug_printf("%d\n", speed);
+
+        motors.left(speed);
+        motors.right(speed);
+
+        time += 10 * XS1_TIMER_KHZ;
         break;
     }
   }
