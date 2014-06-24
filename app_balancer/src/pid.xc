@@ -9,6 +9,7 @@
 void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motors_client motors) {
   timer t; unsigned time;
   vector3d acc;
+  unsigned balancing = 0;
 
   motors.left(0);
   motors.right(0);
@@ -18,9 +19,24 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
 
   while (1) {
     select {
-      case t when timerafter(time) :> void:
+      case i[int _].stop():
+        balancing = 0;
+        motors.left(0);
+        motors.right(0);
+        break;
+
+      case i[int _].balance():
+        balancing = 1;
+        break;
+
+      case i[int _].move_start(unsigned left, unsigned right):
+        break;
+
+      case i[int _].move_stop():
+        break;
+
+      case balancing => t when timerafter(time) :> void:
         motion.accelerometer(acc);
-        debug_printf("ACC: %d %d %d\n", acc.x, acc.y, acc.z);
 
         const unsigned ds = ABS(acc.z) > 3000 ? 50 : 25;
 
@@ -30,17 +46,14 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
             motors.right(0);
           } else
           if (acc.z > 0) {
-            debug_printf("wywala sie do przodu\n");
             motors.left(PWM_PERCENT(ds));
             motors.right(PWM_PERCENT(ds));
           } else
           if (acc.z < 0) {
-            debug_printf("wywala sie do tylu\n");
             motors.left(-PWM_PERCENT(ds));
             motors.right(-PWM_PERCENT(ds));
           }
         } else {
-          debug_printf("stoi!\n");
           motors.left(0);
           motors.right(0);
         }
