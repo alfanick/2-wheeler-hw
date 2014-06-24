@@ -30,7 +30,7 @@ int main() {
     startkit_adc(adc_chan);
     on tile[0] : adc_task(adc, adc_chan, 0);
 
-    on tile[0].core[5] : motors_logic(motors, left_motor, right_motor, motors_bridge.directions);
+    on tile[0].core[6] : motors_logic(motors, left_motor, right_motor, motors_bridge.directions);
     on tile[0].core[6] : motor(left_motor, motors_bridge.left);
     on tile[0].core[6] : motor(right_motor, motors_bridge.right);
 
