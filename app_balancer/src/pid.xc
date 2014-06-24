@@ -12,7 +12,7 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
   motors.right(0);
 
   t :> time;
-  time += 10*XS1_TIMER_KHZ;
+  time += 4*XS1_TIMER_KHZ;
 
   while (1) {
     select {
@@ -21,15 +21,19 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
         debug_printf("ACC: %d %d %d\n", acc.x, acc.y, acc.z);
 
         if (acc.x > -16340) {
+          if (acc.z > 8000 || acc.z < -8000) {
+            motors.left(0);
+            motors.right(0);
+          } else
           if (acc.z > 0) {
             debug_printf("wywala sie do przodu\n");
-            motors.left(PWM_PERCENT(40));
-            motors.right(PWM_PERCENT(40));
+            motors.left(PWM_PERCENT(50));
+            motors.right(PWM_PERCENT(50));
           } else
           if (acc.z < 0) {
             debug_printf("wywala sie do tylu\n");
-            motors.left(PWM_PERCENT(-40));
-            motors.right(PWM_PERCENT(-40));
+            motors.left(PWM_PERCENT(-50));
+            motors.right(PWM_PERCENT(-50));
           }
         } else {
           debug_printf("stoi!\n");
