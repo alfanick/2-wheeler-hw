@@ -14,13 +14,13 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
   int speed;
 
   float correction, error, total_error = 0, last_error = 0;
-  const float Kp = 600.0, Ki = 0.0, Kd = 0.0;
+  const float Kp = 1600.0, Ki = 0.6, Kd = 0.0;
 
   motors.left(0);
   motors.right(0);
 
   t :> time;
-  time += 10*XS1_TIMER_KHZ;
+  time += 5*XS1_TIMER_KHZ;
 
   while (1) {
     select {
@@ -72,7 +72,7 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
         motors.left(speed);
         motors.right(speed);
 
-        time += 10 * XS1_TIMER_KHZ;
+        time += 5 * XS1_TIMER_KHZ;
         break;
     }
   }
