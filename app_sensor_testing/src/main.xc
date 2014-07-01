@@ -23,7 +23,7 @@ int main() {
 
     startkit_adc(adc_chan);
 
-    on tile[0].core[5] : motors_logic(motors_interface, left_motor, right_motor,
+    on tile[0].core[6] : motors_logic(motors_interface, left_motor, right_motor,
                                       motors_bridge.directions,
                                       motors_bridge.sensors);
 
@@ -49,7 +49,7 @@ void logic(lsm303d_client lsm, distance_sensor_client front, distance_sensor_cli
   unsigned short adc_val[4] = {0, 0, 0, 0};
   unsigned int battery_voltage = 0;
 
-  motors.left(PWM_PERCENT(10));
+  motors.right(PWM_PERCENT(100));
 
   t :> time;
   time += 500 * XS1_TIMER_KHZ;
@@ -75,7 +75,7 @@ void logic(lsm303d_client lsm, distance_sensor_client front, distance_sensor_cli
         debug_printf("LEFT: %dRPM\n", motors.left_rpm());
         debug_printf("RIGHT: %dRPM\n", motors.right_rpm());
 
-        time += 500 * XS1_TIMER_KHZ;
+        time += 2000 * XS1_TIMER_KHZ;
         break;
       case adc.complete():
         adc.read(adc_val);
