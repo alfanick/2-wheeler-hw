@@ -7,23 +7,25 @@
 
 
 [[combinable]]
-void logic(lsm303d_client lsm, distance_sensor_client front, distance_sensor_client rear, startkit_adc_if client adc, motors_client motors);
+void logic(lsm303d_client lsm, distance_sensor_client front, distance_sensor_client rear, startkit_adc_if client adc, motors_client motors, motors_status_client status);
 
 int main() {
   interface distance_sensor_i front_distance, rear_distance;
   interface lsm303d_i motion;
   interface motors_i motors_interface;
+  interface motors_status_i motors_status_interface;
   interface motor_i left_motor, right_motor;
   chan adc_chan;
   startkit_adc_if adc_i;
 
   par {
     on tile[0] : adc_task(adc_i, adc_chan, 0);
-    on tile[0].core[4] : logic(motion, front_distance, rear_distance, adc_i, motors_interface);
+    on tile[0].core[4] : logic(motion, front_distance, rear_distance, adc_i, motors_interface, motors_status_interface);
 
     startkit_adc(adc_chan);
 
-    on tile[0].core[6] : motors_logic(motors_interface, left_motor, right_motor,
+    on tile[0].core[6] : motors_logic(motors_interface, motors_status_interface,
+                                      left_motor, right_motor,
                                       motors_bridge.directions,
                                       motors_bridge.sensors);
 
@@ -43,7 +45,7 @@ int main() {
 }
 
 [[combinable]]
-void logic(lsm303d_client lsm, distance_sensor_client front, distance_sensor_client rear, startkit_adc_if client adc, motors_client motors) {
+void logic(lsm303d_client lsm, distance_sensor_client front, distance_sensor_client rear, startkit_adc_if client adc, motors_client motors, motors_status_client status) {
   timer t; unsigned time;
   vector3d acc, mag;
   unsigned short adc_val[4] = {0, 0, 0, 0};
@@ -77,6 +79,14 @@ void logic(lsm303d_client lsm, distance_sensor_client front, distance_sensor_cli
 
         time += 2000 * XS1_TIMER_KHZ;
         break;
+
+      case status.changed():
+        int l, r;
+        { l, r } = status.get();
+
+        debug_printf("L %d R %d\n", l, r);
+        break;
+
       case adc.complete():
         adc.read(adc_val);
         battery_voltage = adc_val[3] * 15350 / 65535;

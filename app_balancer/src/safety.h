@@ -11,7 +11,8 @@
 void balancer_safety(balancer_client balancer,
                      distance_sensor_client front,
                      distance_sensor_client rear,
-                     startkit_adc_if client adc);
+                     startkit_adc_if client adc,
+                     motors_status_client motors_status);
 
 #endif
 
