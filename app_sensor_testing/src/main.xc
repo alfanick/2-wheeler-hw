@@ -1,6 +1,6 @@
 #include "../../platform.h"
 
-//#define DEBUG_PRINT_ENABLE 1
+#define DEBUG_PRINT_ENABLE 1
 
 #include <debug_print.h>
 #include <startkit_adc.h>
@@ -23,7 +23,9 @@ int main() {
 
     startkit_adc(adc_chan);
 
-    on tile[0].core[5] : motors_logic(motors_interface, left_motor, right_motor, motors_bridge.directions);
+    on tile[0].core[5] : motors_logic(motors_interface, left_motor, right_motor,
+                                      motors_bridge.directions,
+                                      motors_bridge.sensors);
 
     par {
       on tile[0].core[6] : motor(left_motor, motors_bridge.left);
@@ -47,31 +49,31 @@ void logic(lsm303d_client lsm, distance_sensor_client front, distance_sensor_cli
   unsigned short adc_val[4] = {0, 0, 0, 0};
   unsigned int battery_voltage = 0;
 
-  front.frequency(13);
-  rear.frequency(17);
-
-  motors.left(-PWM_PERCENT(100));
+  motors.left(PWM_PERCENT(10));
 
   t :> time;
   time += 500 * XS1_TIMER_KHZ;
   while (1) {
     select {
       case t when timerafter(time) :> void:
-        adc.trigger();
-        debug_printf("BATTERY: %dmV\n", battery_voltage);
+//        adc.trigger();
+//        debug_printf("BATTERY: %dmV\n", battery_voltage);
 
-        lsm.accelerometer_raw(acc);
-        debug_printf("ACC_RAW: %d %d %d\n", acc.x, acc.y, acc.z);
-        lsm.accelerometer(acc);
-        debug_printf("ACC:     %d %d %d\n", acc.x, acc.y, acc.z);
+//        lsm.accelerometer_raw(acc);
+//        debug_printf("ACC_RAW: %d %d %d\n", acc.x, acc.y, acc.z);
+//        lsm.accelerometer(acc);
+//        debug_printf("ACC:     %d %d %d\n", acc.x, acc.y, acc.z);
 
-        lsm.magnetometer_raw(mag);
-        debug_printf("MAG_RAW: %d %d %d\n", mag.x, mag.y, mag.z);
-        lsm.magnetometer(mag);
-        debug_printf("MAG:     %d %d %d\n", mag.x, mag.y, mag.z);
+//        lsm.magnetometer_raw(mag);
+//        debug_printf("MAG_RAW: %d %d %d\n", mag.x, mag.y, mag.z);
+//        lsm.magnetometer(mag);
+//        debug_printf("MAG:     %d %d %d\n", mag.x, mag.y, mag.z);
 
-        debug_printf("FRONT:   %d\n", front.read());
-        debug_printf("REAR:    %d\n\n", rear.read());
+//        debug_printf("FRONT:   %d\n", front.read());
+//        debug_printf("REAR:    %d\n\n", rear.read());
+
+        debug_printf("LEFT: %dRPM\n", motors.left_rpm());
+        debug_printf("RIGHT: %dRPM\n", motors.right_rpm());
 
         time += 500 * XS1_TIMER_KHZ;
         break;

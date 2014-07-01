@@ -20,6 +20,7 @@
 #define              RIGHT_MOTOR_STATUS            XS1_PORT_1N
 
 #define               MOTORS_DIRECTIONS            XS1_PORT_4D
+#define                  MOTORS_SENSORS            XS1_PORT_4C
 
 #include <platform.h>
 #include <xs1.h>
@@ -42,7 +43,8 @@ lsm303d_t motion_sensor = {
 motors_t motors_bridge = {
   {  LEFT_MOTOR_DISABLE,   LEFT_MOTOR_STATUS },
   { RIGHT_MOTOR_DISABLE,  RIGHT_MOTOR_STATUS },
-  MOTORS_DIRECTIONS
+  MOTORS_DIRECTIONS,
+  MOTORS_SENSORS
 };
 
 #endif
