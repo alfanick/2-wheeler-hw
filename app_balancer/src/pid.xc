@@ -14,7 +14,7 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
   int speed;
 
   float correction, error, total_error = 0, last_error = 0;
-  const float Kp = 1600.0, Ki = 0.6, Kd = 0.0;
+  const float Kp = 2200.0, Ki = 0.6, Kd = 0.0;
 
   motors.left(0);
   motors.right(0);
@@ -49,11 +49,9 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
           break;
         }
 
-
         error = sqrt(acc.y * acc.y + acc.x * acc.x);
         error = acc.z / error;
         error = atan(error);
-
         debug_printf("%d %d %d\n", acc.x, acc.y, acc.z);
 
         correction = Kp * error +

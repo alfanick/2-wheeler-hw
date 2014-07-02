@@ -1,6 +1,6 @@
 #include "../../platform.h"
 
-#define DEBUG_PRINT_ENABLE 1
+#define DEBUG_PRINT_ENABLE 0
 
 #include <debug_print.h>
 #include <startkit_adc.h>
@@ -52,17 +52,24 @@ void logic(lsm303d_client lsm, distance_sensor_client front, distance_sensor_cli
   unsigned int battery_voltage = 0;
   unsigned int left_current = 0, right_current = 0;
 
-  motors.right(PWM_PERCENT(100));
-  motors.left(PWM_PERCENT(100));
-
+  int k = 0;
+  motors.left(PWM_PERCENT(0));
+motors.right(PWM_PERCENT(90));
   t :> time;
-  time += 500 * XS1_TIMER_KHZ;
+  time += 3000 * XS1_TIMER_KHZ;
+
+  t when timerafter(time) :> void;
+  motors.right(PWM_PERCENT(10));
+
   while (1) {
     select {
       case t when timerafter(time) :> void:
         debug_printf("BATTERY: %dmV\n", battery_voltage);
         debug_printf("LEFT CURRENT: %dmA\n", left_current);
         debug_printf("RIGHT CURRENT: %dmA\n", right_current);
+
+//        motors.right(PWM_PERCENT(10));
+//        motors.right(PWM_PERCENT((k += 10) % 100));
 
 //        lsm.accelerometer_raw(acc);
 //        debug_printf("ACC_RAW: %d %d %d\n", acc.x, acc.y, acc.z);
