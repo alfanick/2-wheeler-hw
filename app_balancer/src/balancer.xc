@@ -15,6 +15,7 @@ int main() {
   interface motors_status_i motors_status;
   interface motor_i left_motor, right_motor;
   interface balancer_i balancer[2];
+  interface balancer_sensors_i sensors;
   interface bluetooth_i bluetooth;
   startkit_adc_if adc;
   chan adc_chan;
@@ -25,10 +26,10 @@ int main() {
     on tile[0].core[0] : balancer_pid(balancer, motion, motors);
 
     // Distance sensing, battery level monitor, motors current, motors status
-    on tile[0].core[1] : balancer_safety(balancer[0], front, rear, adc, motors_status);
+    on tile[0].core[1] : balancer_safety(balancer[0], front, rear, adc, motors_status, sensors);
 
     // Reacting to commands from bluetooth (on/off, front/back, left/right, status)
-    on tile[0].core[2] : balancer_communication(balancer[1], bluetooth);
+    on tile[0].core[2] : balancer_communication(balancer[1], bluetooth, sensors);
 
     on tile[0].core[2] : bluetooth_uart(bluetooth, bluetooth_in, bluetooth_out);
 
@@ -43,7 +44,7 @@ int main() {
     }
 
     startkit_adc(adc_chan);
-    on tile[0].core[2] : adc_task(adc, adc_chan, 2500 * XS1_TIMER_MHZ);
+    on tile[0] : adc_task(adc, adc_chan, 2500 * XS1_TIMER_MHZ);
 
     on tile[0].core[6] : motors_logic(motors, motors_status, left_motor, right_motor, motors_bridge.directions, motors_bridge.sensors);
     on tile[0].core[6] : motor(left_motor, motors_bridge.left);

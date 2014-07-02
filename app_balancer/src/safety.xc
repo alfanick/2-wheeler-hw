@@ -10,7 +10,8 @@ void balancer_safety(balancer_client balancer,
                      distance_sensor_client front,
                      distance_sensor_client rear,
                      startkit_adc_if client adc,
-                     motors_status_client motors_status) {
+                     motors_status_client motors_status,
+                     interface balancer_sensors_i server sensors) {
   unsigned battery = 0;
   unsigned current[2] = { 0, 0 };
 
@@ -40,6 +41,10 @@ void balancer_safety(balancer_client balancer,
         //  balancer.stop();
 
 //        debug_printf("%dmV %dmA %dmA\n", battery, current[0], current[1]);
+        break;
+
+      case sensors.battery_voltage() -> unsigned voltage:
+        voltage = battery;
         break;
     }
   }
