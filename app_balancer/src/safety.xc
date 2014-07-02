@@ -36,8 +36,8 @@ void balancer_safety(balancer_client balancer,
         else
           leds <: ~0;
 
-        if (current[0] > 5000 || current[1] > 5000)
-          balancer.stop();
+        //if (current[0] > 5000 || current[1] > 5000)
+        //  balancer.stop();
 
 //        debug_printf("%dmV %dmA %dmA\n", battery, current[0], current[1]);
         break;
