@@ -19,10 +19,10 @@ int main() {
   startkit_adc_if adc_i;
 
   par {
-    on tile[0] : adc_task(adc_i, adc_chan, 0);
-    on tile[0].core[4] : logic(motion, front_distance, rear_distance, adc_i, motors_interface, motors_status_interface);
+    on tile[0] : logic(motion, front_distance, rear_distance, adc_i, motors_interface, motors_status_interface);
 
     startkit_adc(adc_chan);
+    on tile[0] : adc_task(adc_i, adc_chan, 2500 * XS1_TIMER_MHZ);
 
     on tile[0].core[6] : motors_logic(motors_interface, motors_status_interface,
                                       left_motor, right_motor,
@@ -50,16 +50,19 @@ void logic(lsm303d_client lsm, distance_sensor_client front, distance_sensor_cli
   vector3d acc, mag;
   unsigned short adc_val[4] = {0, 0, 0, 0};
   unsigned int battery_voltage = 0;
+  unsigned int left_current = 0, right_current = 0;
 
   motors.right(PWM_PERCENT(100));
+  motors.left(PWM_PERCENT(100));
 
   t :> time;
   time += 500 * XS1_TIMER_KHZ;
   while (1) {
     select {
       case t when timerafter(time) :> void:
-//        adc.trigger();
-//        debug_printf("BATTERY: %dmV\n", battery_voltage);
+        debug_printf("BATTERY: %dmV\n", battery_voltage);
+        debug_printf("LEFT CURRENT: %dmA\n", left_current);
+        debug_printf("RIGHT CURRENT: %dmA\n", right_current);
 
 //        lsm.accelerometer_raw(acc);
 //        debug_printf("ACC_RAW: %d %d %d\n", acc.x, acc.y, acc.z);
@@ -74,10 +77,10 @@ void logic(lsm303d_client lsm, distance_sensor_client front, distance_sensor_cli
 //        debug_printf("FRONT:   %d\n", front.read());
 //        debug_printf("REAR:    %d\n\n", rear.read());
 
-        debug_printf("LEFT: %dRPM\n", motors.left_rpm());
-        debug_printf("RIGHT: %dRPM\n", motors.right_rpm());
+//        debug_printf("LEFT: %dRPM\n", motors.left_rpm());
+//        debug_printf("RIGHT: %dRPM\n", motors.right_rpm());
 
-        time += 2000 * XS1_TIMER_KHZ;
+        time += 500 * XS1_TIMER_KHZ;
         break;
 
       case status.changed():
@@ -90,6 +93,8 @@ void logic(lsm303d_client lsm, distance_sensor_client front, distance_sensor_cli
       case adc.complete():
         adc.read(adc_val);
         battery_voltage = adc_val[3] * 15350 / 65535;
+        left_current = adc_val[0]  * 6255 / 65535;
+        right_current = adc_val[1] * 6255 / 65535;
         break;
     }
   }
