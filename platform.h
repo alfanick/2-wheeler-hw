@@ -25,6 +25,8 @@
 #include <platform.h>
 #include <xs1.h>
 
+#include <uart_fast_tx.h>
+#include <uart_fast_rx.h>
 #include <distance_sensor.h>
 #include <lsm303d.h>
 #include <motors.h>
@@ -47,4 +49,10 @@ motors_t motors_bridge = {
   MOTORS_SENSORS
 };
 
+in port bluetooth_receive = BLUETOOTH_RECEIVE;
+out port bluetooth_transmit = BLUETOOTH_TRANSMIT;
+const clock serial_clock = XS1_CLKBLK_REF;
+
 #endif
+
+/* vim: set ft=xc: */

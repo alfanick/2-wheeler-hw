@@ -43,6 +43,8 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
       case balancing => t when timerafter(time) :> void:
         motion.accelerometer(acc);
 
+        debug_printf("%d %d %d\n", acc.x, acc.y, acc.z);
+
         error = sqrt(acc.y * acc.y + acc.x * acc.x);
         error = acc.z / error;
         error = atan(error);

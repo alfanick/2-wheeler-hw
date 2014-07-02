@@ -17,19 +17,32 @@ int main() {
   interface bluetooth_i bluetooth;
   startkit_adc_if adc;
   chan adc_chan;
+  streaming chan bluetooth_in, bluetooth_out;
 
   par {
     // Balancing and motors control
-    on tile[0] : balancer_pid(balancer, motion, motors);
+    on tile[0].core[0] : balancer_pid(balancer, motion, motors);
 
     // Distance sensing, battery level monitor, motors current, motors status
-    on tile[0] : balancer_safety(balancer[0], front, rear, adc, motors_status);
+    on tile[0].core[1] : balancer_safety(balancer[0], front, rear, adc, motors_status);
 
     // Reacting to commands from bluetooth (on/off, front/back, left/right, status)
-    on tile[0] : balancer_communication(balancer[1], bluetooth);
+    on tile[0].core[2] : balancer_communication(balancer[1], bluetooth);
+
+    /* on tile[0].core[2] : bluetooth_uart(bluetooth, bluetooth_in, bluetooth_out); */
+
+    on tile[0] : {
+      uart_rx_fast_init(bluetooth_receive, serial_clock);
+      uart_rx_fast(bluetooth_receive, bluetooth_in, 10416);
+    }
+
+    on tile[0] : {
+      uart_tx_fast_init(bluetooth_transmit, serial_clock);
+      uart_tx_fast(bluetooth_transmit, bluetooth_out, 10416);
+    }
 
     startkit_adc(adc_chan);
-    on tile[0] : adc_task(adc, adc_chan, 2500 * XS1_TIMER_MHZ);
+    on tile[0].core[2] : adc_task(adc, adc_chan, 2500 * XS1_TIMER_MHZ);
 
     on tile[0].core[6] : motors_logic(motors, motors_status, left_motor, right_motor, motors_bridge.directions, motors_bridge.sensors);
     on tile[0].core[6] : motor(left_motor, motors_bridge.left);

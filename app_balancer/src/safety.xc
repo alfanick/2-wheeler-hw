@@ -31,7 +31,7 @@ void balancer_safety(balancer_client balancer,
         current[0] = adc_val[0] * 6255 / 65535;
         current[1] = adc_val[1] * 6255 / 65535;
 
-        if (battery > 10000)
+        if (battery > 11800)
           leds <: ~(1<<7);
         else
           leds <: ~0;
