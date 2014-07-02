@@ -2,6 +2,7 @@
 
 #include <startkit_adc.h>
 
+#include "bluetooth.h"
 #include "balancer.h"
 #include "pid.h"
 #include "safety.h"
@@ -29,7 +30,7 @@ int main() {
     // Reacting to commands from bluetooth (on/off, front/back, left/right, status)
     on tile[0].core[2] : balancer_communication(balancer[1], bluetooth);
 
-    /* on tile[0].core[2] : bluetooth_uart(bluetooth, bluetooth_in, bluetooth_out); */
+    on tile[0].core[2] : bluetooth_uart(bluetooth, bluetooth_in, bluetooth_out);
 
     on tile[0] : {
       uart_rx_fast_init(bluetooth_receive, serial_clock);
