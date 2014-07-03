@@ -17,6 +17,7 @@ read.
 | RPM?        | get RPM of motors              |
 | T?          | get target angle               |
 | T=a         | set target angle               |
+| T           | set current angle as target    |
 | A?          | get current pitch angle        |
 | B           | starts balancing               |
 | X           | stop balancing                 |

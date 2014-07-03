@@ -72,6 +72,10 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
           balancer.set_target(t);
           bluetooth.send("OK\r", 3);
         } else
+        if (safestrstr(command, "T") == 0) {
+          balancer.set_target(balancer.get_target());
+          bluetooth.send("OK\r", 3);
+        } else
         if (safestrstr(command, "V?") == 0) {
           bluetooth.send("V=", 2);
           bluetooth.send_number(sensors.battery_voltage());
