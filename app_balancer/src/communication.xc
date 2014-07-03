@@ -55,6 +55,21 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
           balancer.stop();
           bluetooth.send("OK\r", 3);
         } else
+        if (safestrstr(command, "A?") == 0) {
+          bluetooth.send("A=", 2);
+          bluetooth.send_number(balancer.get_angle());
+        } else
+        if (safestrstr(command, "T?") == 0) {
+          bluetooth.send("T=", 2);
+          bluetooth.send_number(balancer.get_target());
+        } else
+        if (safestrstr(command, "T=") == 0) {
+          int t;
+          parse_numbers(command, command_length, 2, &t, 1);
+
+          balancer.set_target(t);
+          bluetooth.send("OK\r", 3);
+        } else
         if (safestrstr(command, "V?") == 0) {
           bluetooth.send("V=", 2);
           bluetooth.send_number(sensors.battery_voltage());
