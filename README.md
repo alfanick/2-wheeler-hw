@@ -6,8 +6,8 @@ The robot is solving physical problem of inverted pendulum using PID regulator c
 * bluetooth transceiver
 * two distance meters
 * motor driver with current sensing
-* buck converter designed for use with LiPo accu
-* accu voltage monitoring
+* buck converter designed for use with LiPo battery
+* battery voltage monitoring
 * high torque motors with encoders
 
 ## Parts
