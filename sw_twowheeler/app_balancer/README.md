@@ -19,7 +19,7 @@ read.
 | T=a         | set target angle               |
 | T           | set current angle as target    |
 | A?          | get current pitch angle        |
-| B           | starts balancing               |
+| S           | starts balancing               |
 | X           | stop balancing                 |
 | VER?        | get firmware version           |
 
