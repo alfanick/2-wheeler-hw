@@ -7,6 +7,9 @@ interface balancer_i {
 
   void move_start(unsigned left, unsigned right);
   void move_stop();
+
+  void get_pid(int K[3]);
+  void set_pid(int K[3]);
 };
 typedef interface balancer_i client balancer_client;
 

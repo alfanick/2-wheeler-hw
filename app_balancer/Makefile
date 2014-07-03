@@ -6,7 +6,7 @@ TARGET = STARTKIT
 # The APP_NAME variable determines the name of the final .xe file. It should
 # not include the .xe postfix. If left blank the name will default to
 # the project name
-APP_NAME =
+APP_NAME = app_balancer
 
 # The USED_MODULES variable lists other module used by the application.
 USED_MODULES = module_logging module_distance_sensor module_lsm303d module_i2c_master module_startkit_adc module_motor_pair module_uart_fast_tx module_uart_fast_rx module_bluetooth
@@ -16,11 +16,20 @@ USED_MODULES = module_logging module_distance_sensor module_lsm303d module_i2c_m
 # XCC_XC_FLAGS, XCC_C_FLAGS, XCC_ASM_FLAGS, XCC_CPP_FLAGS
 # If the variable XCC_MAP_FLAGS is set it overrides the flags passed to
 # xcc for the final link (mapping) stage.
-XCC_FLAGS_Debug   = -O0 -report -g -fxscope
-XCC_FLAGS_Release = -O3 -report -g -fxscope
+XCC_FLAGS_Debug   ?= -O0 -report -g -fxscope
+XCC_FLAGS_Release ?= -O3 -report -g -fxscope
 
 # The VERBOSE variable, if set to 1, enables verbose output from the make system.
 VERBOSE = 0
 
 XMOS_MAKE_PATH ?= ../..
 -include $(XMOS_MAKE_PATH)/xcommon/module_xcommon/build/Makefile.common
+
+flash_flags:
+	$(eval XCC_FLAGS_Debug := -O3 -report)
+	$(eval XCC_FLAGS_Release := -O3 -report)
+
+flash: flash_flags clean
+	@xmake all
+	@xflash bin/Release/$(APP_NAME).xe
+	@xmake clean

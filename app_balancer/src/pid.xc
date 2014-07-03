@@ -14,7 +14,7 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
   int speed;
 
   float correction, error, total_error = 0, last_error = 0;
-  const float Kp = 1500.0, Ki = 3, Kd = 0.3;
+  float Kp = 1500.0, Ki = 3, Kd = 0.3;
 
   motors.left(0);
   motors.right(0);
@@ -32,12 +32,28 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
 
       case i[int _].balance():
         balancing = 1;
+        total_error = 0;
+        last_error = 0;
         break;
 
       case i[int _].move_start(unsigned left, unsigned right):
         break;
 
       case i[int _].move_stop():
+        break;
+
+      case i[int _].get_pid(int K[3]):
+        K[0] = (int)(Kp * 1000);
+        K[1] = (int)(Ki * 1000);
+        K[2] = (int)(Kd * 1000);
+        break;
+
+      case i[int _].set_pid(int K[3]):
+        Kp = (float)K[0] / 1000.0;
+        Ki = (float)K[1] / 1000.0;
+        Kd = (float)K[2] / 1000.0;
+        total_error = 0;
+        last_error = 0;
         break;
 
       case balancing => t when timerafter(time) :> void:
