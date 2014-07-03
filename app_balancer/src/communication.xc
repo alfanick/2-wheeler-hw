@@ -38,7 +38,6 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
   unsigned char command[128];
   int command_length;
 
-  balancer.balance();
   while (1) {
     select {
       case bluetooth.incoming():
