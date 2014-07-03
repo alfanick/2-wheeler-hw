@@ -31,10 +31,13 @@ flash_flags:
 	$(eval XCC_FLAGS_Debug := -O3 -report -DAPP_VERSION=\"$(APP_VERSION)\")
 	$(eval XCC_FLAGS_Release := -O3 -report -DAPP_VERSION=\"$(APP_VERSION)\")
 
+connect:
+	@picocom -b 9600 -fn -pn -d8 -c -i -r -l --imap crcrlf --omap lfcr -e c /dev/tty.TwoWheeler-SPP
+
 run: clean all
 	@xrun --verbose --io --xscope bin/Release/$(APP_NAME).xe
 
 flash: flash_flags clean
 	@xmake all
 	@xflash bin/Release/$(APP_NAME).xe
-	@xmake clean
+	@xmake clean > /dev/null
