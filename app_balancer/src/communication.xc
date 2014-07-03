@@ -55,8 +55,10 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
           balancer.stop();
           bluetooth.send("OK\r", 3);
         } else
-        if (safestrstr(command, "V?") == 0)
-          bluetooth.send_number(sensors.battery_voltage()); else
+        if (safestrstr(command, "V?") == 0) {
+          bluetooth.send("V=", 2);
+          bluetooth.send_number(sensors.battery_voltage());
+        } else
         if (safestrstr(command, "PID=") == 0) {
           int K[3];
           parse_numbers(command, command_length, 4, K, 3);
