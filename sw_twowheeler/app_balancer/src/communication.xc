@@ -73,7 +73,7 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
           bluetooth.send("OK\r", 3);
         } else
         if (safestrstr(command, "T") == 0) {
-          balancer.set_target(balancer.get_target());
+          balancer.set_target(balancer.get_angle());
           bluetooth.send("OK\r", 3);
         } else
         if (safestrstr(command, "V?") == 0) {
