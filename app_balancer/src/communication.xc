@@ -1,6 +1,6 @@
 #include "communication.h"
 
-#define DEBUG_PRINT_ENABLE 0
+#define DEBUG_PRINT_ENABLE 1
 #include <debug_print.h>
 #include <safestring.h>
 
@@ -44,6 +44,9 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
         bluetooth.read(command, command_length);
 
         if (command_length == 0)
+          break;
+
+        if (safestrstr(command, "ERROR") == 0)
           break;
 
         if (safestrstr(command, "S") == 0) {
