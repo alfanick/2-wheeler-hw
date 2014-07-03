@@ -11,8 +11,8 @@ read.
 
 |   Command   |          Description           |
 | ----------- | ------------------------------ |
-| V           | get battery voltage            |
-| PID         | get current PID coefficients   |
+| V?          | get battery voltage            |
+| PID?        | get current PID coefficients   |
 | PID=p,i,d   | set PID coefficients           |
 | B           | starts balancing               |
 | X           | stop balancing                 |
