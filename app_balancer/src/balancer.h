@@ -14,6 +14,8 @@ interface balancer_i {
 
   void get_pid(int K[3]);
   void set_pid(int K[3]);
+
+  void get_rpm(int r[2]);
 };
 typedef interface balancer_i client balancer_client;
 

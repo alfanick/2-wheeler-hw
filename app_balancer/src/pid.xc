@@ -56,6 +56,11 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
         last_error = 0;
         break;
 
+      case i[int _].get_rpm(int r[2]):
+        r[0] = motors.left_rpm();
+        r[1] = motors.right_rpm();
+        break;
+
       case balancing => t when timerafter(time) :> void:
         motion.accelerometer(acc);
 
