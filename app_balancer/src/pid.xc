@@ -85,6 +85,7 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
         if (!balancing || ABS(angle * (180.0 / M_PI)) > 43) {
           motors.left(0);
           motors.right(0);
+          time += 5 * XS1_TIMER_KHZ;
           break;
         }
 
