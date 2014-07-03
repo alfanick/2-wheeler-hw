@@ -71,6 +71,9 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
 
           bluetooth.send("PID=", 4);
           bluetooth.send_numbers(K, 3);
+        } else
+        if (safestrstr(command, "VER?") == 0) {
+          bluetooth.send(APP_VERSION"\r", 8);
         }
         else
           bluetooth.send("ERROR\r", 6);

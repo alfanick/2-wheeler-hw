@@ -1,6 +1,10 @@
 #ifndef APP_BALANCER_BALANCER_H_
 #define APP_BALANCER_BALANCER_H_
 
+#ifndef APP_VERSION
+#define APP_VERSION "DVLPMNT"
+#endif
+
 interface balancer_i {
   void stop();
   void balance();

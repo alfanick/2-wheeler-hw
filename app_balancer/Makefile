@@ -25,9 +25,14 @@ VERBOSE = 0
 XMOS_MAKE_PATH ?= ../..
 -include $(XMOS_MAKE_PATH)/xcommon/module_xcommon/build/Makefile.common
 
+APP_VERSION = $(shell git rev-parse --short HEAD)
+
 flash_flags:
-	$(eval XCC_FLAGS_Debug := -O3 -report)
-	$(eval XCC_FLAGS_Release := -O3 -report)
+	$(eval XCC_FLAGS_Debug := -O3 -report -DAPP_VERSION=\"$(APP_VERSION)\")
+	$(eval XCC_FLAGS_Release := -O3 -report -DAPP_VERSION=\"$(APP_VERSION)\")
+
+run: clean all
+	@xrun --verbose --io --xscope bin/Release/$(APP_NAME).xe
 
 flash: flash_flags clean
 	@xmake all
