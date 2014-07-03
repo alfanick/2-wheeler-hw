@@ -1,8 +1,25 @@
 # TwoWheeler
+TwoWheeler is Self Balancing Robot implemented using [XMOS startKIT](http://www.xmos.com/startkit) platform.
+
+The robot is solving physical problem of inverted pendulum using PID regulator connecting motors with accelerometer. However its hardware design has much more features:
+* 8 core 32-bit microcontroller
+* bluetooth transceiver
+* two distance meters
+* motor driver with current sensing
+* buck converter designed for use with LiPo accu
+* accu voltage monitoring
+* high torque motors with encoders
+
+## Parts
+
+* XMOS firmware - more in [balancer README](sw_twowheeler/app_balancer/README.md)
+* computer app - TODO
+* circuit schematic and PCB design
+* hardware design - not yet documented
 
 ## License
 
-Copyright 2014 Amadeusz Juskowiak
+*Copyright 2014 Amadeusz Juskowiak*
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
