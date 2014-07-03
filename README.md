@@ -17,6 +17,16 @@ The robot is solving physical problem of inverted pendulum using PID regulator c
 * circuit schematic and PCB design
 * hardware design - not yet documented
 
+## Authors
+
+* Amadeusz Juskowiak - amadeusz@me.com
+* Piotr Żurkowski  - kareth92@gmail.com
+
+Inspired by Embedded Systems course at Poznan University of
+Technology.
+
+
+
 ## License
 
 *Copyright 2014 Amadeusz Juskowiak*
