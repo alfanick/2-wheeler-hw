@@ -16,6 +16,7 @@ read.
 | PID=p,i,d   | set PID coefficients           |
 | B           | starts balancing               |
 | X           | stop balancing                 |
+| VER?        | get firmware version           |
 
 
 ### Replies
@@ -26,3 +27,4 @@ read.
 | ERROR       | malformed command              |
 | V=n         | battery voltage in mV          |
 | PID=p,i,d   | current PID coefficients       |
+| VER=v       | firmware git commit id         |

@@ -73,7 +73,7 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
           bluetooth.send_numbers(K, 3);
         } else
         if (safestrstr(command, "VER?") == 0) {
-          bluetooth.send(APP_VERSION"\r", 8);
+          bluetooth.send("VER="APP_VERSION"\r", 12);
         }
         else
           bluetooth.send("ERROR\r", 6);
