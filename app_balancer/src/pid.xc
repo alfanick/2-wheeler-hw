@@ -73,7 +73,7 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
         a = (int)(target * 180.0 / M_PI * 1000);
         break;
 
-      case balancing => t when timerafter(time) :> void:
+      case t when timerafter(time) :> void:
         motion.accelerometer(acc);
 
         debug_printf("%d %d %d\n", acc.x, acc.y, acc.z);
@@ -82,13 +82,13 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
         angle = acc.z / angle;
         angle = atan(angle);
 
-        if (ABS(angle * (180.0 / M_PI)) > 43) {
+        if (!balancing || ABS(angle * (180.0 / M_PI)) > 43) {
           motors.left(0);
           motors.right(0);
           break;
         }
 
-        error = target + angle;
+        error = angle - target;
 
         correction = Kp * error +
                      Ki * total_error +
