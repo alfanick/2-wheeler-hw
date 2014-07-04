@@ -33,7 +33,7 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
 
       case i[int _].balance():
         balancing = 1;
-        total_error = 0;
+        error_integral = 0;
         last_error = 0;
         break;
 
@@ -53,7 +53,7 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
         Kp = (float)K[0] / 1000.0;
         Ki = (float)K[1] / 1000.0 * (((float)sample_time) / 1000.0);
         Kd = (float)K[2] / 1000.0 / (((float)sample_time) / 1000.0);
-        total_error = 0;
+        error_integral = 0;
         last_error = 0;
         break;
 
