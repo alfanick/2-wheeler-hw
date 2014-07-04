@@ -10,7 +10,7 @@
 void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motors_client motors) {
   timer t; unsigned time;
   vector3d acc, mag;
-  unsigned balancing = 0;
+  unsigned balancing = 1;
   int speed;
 
   const static int sample_time = 5;
