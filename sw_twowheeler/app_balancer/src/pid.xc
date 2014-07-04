@@ -13,14 +13,15 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
   unsigned balancing = 0;
   int speed;
 
+  const static int sample_time = 5;
   float correction, error, angle, target = 0, total_error = 0, last_error = 0;
-  float Kp = 1500.0, Ki = 3, Kd = 0.3;
+  float Kp = 1500.0, Ki = 0, Kd = 0;
 
   motors.left(0);
   motors.right(0);
 
   t :> time;
-  time += 5*XS1_TIMER_KHZ;
+  time += sample_time*XS1_TIMER_KHZ;
 
   while (1) {
     select {
@@ -44,14 +45,14 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
 
       case i[int _].get_pid(int K[3]):
         K[0] = (int)(Kp * 1000);
-        K[1] = (int)(Ki * 1000);
-        K[2] = (int)(Kd * 1000);
+        K[1] = (int)(Ki * 1000 / (((float)sample_time) / 1000.0));
+        K[2] = (int)(Kd * 1000 * (((float)sample_time) / 1000.0));
         break;
 
       case i[int _].set_pid(int K[3]):
         Kp = (float)K[0] / 1000.0;
-        Ki = (float)K[1] / 1000.0;
-        Kd = (float)K[2] / 1000.0;
+        Ki = (float)K[1] / 1000.0 * (((float)sample_time) / 1000.0);
+        Kd = (float)K[2] / 1000.0 / (((float)sample_time) / 1000.0);
         total_error = 0;
         last_error = 0;
         break;
@@ -85,7 +86,7 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
         if (!balancing || ABS(angle * (180.0 / M_PI)) > 43) {
           motors.left(0);
           motors.right(0);
-          time += 5 * XS1_TIMER_KHZ;
+          time += sample_time * XS1_TIMER_KHZ;
           break;
         }
 
@@ -107,7 +108,7 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
         motors.left(speed);
         motors.right(speed);
 
-        time += 5 * XS1_TIMER_KHZ;
+        time += sample_time * XS1_TIMER_KHZ;
         break;
     }
   }
