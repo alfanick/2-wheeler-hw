@@ -7,9 +7,12 @@ Pry.config.prompt = [ proc { "% " }, proc { "  " }]
 
 require './twowheeler.rb'
 
+puts "Welcome to balancer console!"
+print "Connecting... "
 balancer = TwoWheeler.new
-tw = balancer
+
+puts "done."
 
 balancer.balance!
 
-binding.pry
+balancer.pry
