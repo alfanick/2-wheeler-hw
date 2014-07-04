@@ -14,7 +14,7 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
   int speed;
 
   const static int sample_time = 5;
-  float correction, error, angle = 0, target = 0, total_error = 0, last_error = 0, last_angle = 0;
+  float correction, error, angle = 0, target = 0, error_integral = 0, last_error = 0, last_angle = 0;
   float Kp = 2000.0, Ki = 4000.0 * ((float)sample_time/1000.0), Kd = 2.0 / ((float)sample_time/1000.0);
 
   motors.left(0);
@@ -103,11 +103,11 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
         }
 
         error = angle - target;
+        error_integral += Ki * error;
 
         correction =   Kp * error
-                     + Ki * total_error
+                     + error_integral
                      - Kd * (angle - last_angle);
-        total_error += error;
         last_error = error;
         last_angle = angle;
 
