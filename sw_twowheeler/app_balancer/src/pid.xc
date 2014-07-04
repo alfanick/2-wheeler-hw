@@ -133,7 +133,7 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
         motors.right(speed);
 
         t :> end;
-        loop_time = (end - start) / XS1_TIMER_KHZ + 1;
+        loop_time = end - start;
         //debug_printf("<%dms\n", (end-start)/XS1_TIMER_KHZ+1);
         time += sample_time * XS1_TIMER_KHZ;
         break;

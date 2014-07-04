@@ -20,6 +20,10 @@ class TwoWheeler
     t? / 1000.0
   end
 
+  def looptime
+    looptime? / 100000000.0
+  end
+
   def target=(a)
     method_missing('t=', Integer(a * 1000.0) )
   end
