@@ -25,6 +25,7 @@
 #include <platform.h>
 #include <xs1.h>
 
+#include <pwm_singlebit_port.h>
 #include <uart_fast_tx.h>
 #include <uart_fast_rx.h>
 #include <distance_sensor.h>
@@ -43,8 +44,8 @@ lsm303d_t motion_sensor = {
 };
 
 motors_t motors_bridge = {
-  {  LEFT_MOTOR_DISABLE,   LEFT_MOTOR_STATUS },
-  { RIGHT_MOTOR_DISABLE,  RIGHT_MOTOR_STATUS },
+  { {  LEFT_MOTOR_DISABLE },   LEFT_MOTOR_STATUS, XS1_CLKBLK_2 },
+  { { RIGHT_MOTOR_DISABLE },  RIGHT_MOTOR_STATUS, XS1_CLKBLK_3 },
   MOTORS_DIRECTIONS,
   MOTORS_SENSORS
 };

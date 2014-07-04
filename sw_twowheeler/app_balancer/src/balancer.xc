@@ -20,6 +20,7 @@ int main() {
   startkit_adc_if adc;
   chan adc_chan;
   streaming chan bluetooth_in, bluetooth_out;
+  chan left_pwm, right_pwm;
 
   par {
     // Balancing and motors control
@@ -47,13 +48,16 @@ int main() {
     on tile[0] : adc_task(adc, adc_chan, 2500 * XS1_TIMER_MHZ);
 
     on tile[0].core[6] : motors_logic(motors, motors_status, left_motor, right_motor, motors_bridge.directions, motors_bridge.sensors);
-    on tile[0].core[6] : motor(left_motor, motors_bridge.left);
-    on tile[0].core[6] : motor(right_motor, motors_bridge.right);
+    on tile[0].core[6] : motor(left_motor, motors_bridge.left.status, left_pwm);
+    on tile[0].core[6] : motor(right_motor, motors_bridge.right.status, right_pwm);
 
     on tile[0].core[7] : lsm303d(motion, motion_sensor);
     on tile[0].core[7] : distance_sensor(front, distance_sensors[0]);
     on tile[0].core[7] : distance_sensor(rear, distance_sensors[1]);
     // motion
+
+    on tile[0] : pwmSingleBitPort(left_pwm, motors_bridge.left.pwm_clock, motors_bridge.left.disable, 1, 2048, 340, 1);
+    on tile[0] : pwmSingleBitPort(right_pwm, motors_bridge.right.pwm_clock, motors_bridge.right.disable, 1, 2048, 340, 1);
   }
 
   return 0;

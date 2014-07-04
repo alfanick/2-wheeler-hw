@@ -16,3 +16,6 @@
 [submodule "deps/sc_util"]
 	path = deps/sc_util
 	url = git://github.com/xcore/sc_util
+[submodule "deps/sc_pwm"]
+	path = deps/sc_pwm
+	url = https://github.com/xcore/sc_pwm.git
