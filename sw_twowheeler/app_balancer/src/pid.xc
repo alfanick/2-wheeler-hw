@@ -8,9 +8,9 @@
 
 [[combinable]]
 void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motors_client motors) {
-  timer t; unsigned time;
+  timer t; unsigned time,end,start;
   vector3d acc, mag;
-  unsigned balancing = 0;
+  unsigned balancing = 1;
   int speed;
 
   const static int sample_time = 5;
@@ -75,10 +75,11 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
         break;
 
       case t when timerafter(time) :> void:
+        t :> start;
         motion.accelerometer(acc);
         //motion.magnetometer_raw(mag);
 
-        debug_printf("%d %d %d\n", acc.x, acc.y, acc.z);
+//        debug_printf("%d %d %d\n", acc.x, acc.y, acc.z);
 
         float angle_acc = sqrt(acc.y * acc.y + acc.x * acc.x);
         angle_acc = acc.z / angle_acc;
@@ -109,16 +110,18 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
         total_error += error;
         last_error = error;
 
-        debug_printf("%d\n", (int)(error));
+  //      debug_printf("%d\n", (int)(error));
 
         speed = (correction > PWM_RESOLUTION) ? PWM_RESOLUTION :
                 (correction < -PWM_RESOLUTION) ? -PWM_RESOLUTION :
                 correction;
-        debug_printf("%d\n", speed);
+    //    debug_printf("%d\n", speed);
 
         motors.left(speed);
         motors.right(speed);
 
+        t :> end;
+        //debug_printf("<%dms\n", (end-start)/XS1_TIMER_KHZ+1);
         time += sample_time * XS1_TIMER_KHZ;
         break;
     }
