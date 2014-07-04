@@ -22,6 +22,7 @@ read.
 | S           | starts balancing               |
 | X           | stop balancing                 |
 | VER?        | get firmware version           |
+| LOOPTIME?   | get last loop execution time   |
 
 
 ### Replies
@@ -36,3 +37,4 @@ read.
 | T=a         | current target angle           |
 | A=a         | current pitch angle            |
 | VER=v       | firmware git commit id         |
+| LOOPTIME=v  | last loop execution time in ms |

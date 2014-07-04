@@ -104,6 +104,10 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
         } else
         if (safestrstr(command, "VER?") == 0) {
           bluetooth.send("VER="APP_VERSION"\r", 12);
+        } else
+        if (safestrstr(command, "LOOPTIME?") == 0) {
+          bluetooth.send("LOOPTIME=", 9);
+          bluetooth.send_number(balancer.get_loop_time());
         }
         else
           bluetooth.send("ERROR\r", 6);

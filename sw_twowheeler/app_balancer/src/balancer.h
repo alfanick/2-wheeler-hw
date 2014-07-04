@@ -18,6 +18,7 @@ interface balancer_i {
   void get_rpm(int r[2]);
 
   int get_angle();
+  unsigned get_loop_time();
 
   void set_target(int angle);
   int get_target();
