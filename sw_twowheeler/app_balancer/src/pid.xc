@@ -116,9 +116,7 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
         angle = sqrt(acc.y * acc.y + acc.x * acc.x);
         angle = acc.z / angle;
         angle = atan(angle);
-
-        angle = (int)(angle * (180.0 / M_PI) * 10);
-        angle /= 10 * 180.0 / M_PI;
+        angle = roundf(angle * 180) / 180;
 
         if (!balancing || ABS(angle * (180.0 / M_PI)) > 43) {
           motors.left(0);
