@@ -2,6 +2,10 @@
 
 require 'rubygems'
 require 'pry'
+
+Pry.config.auditlog_enabled = true
+Pry.config.auditlog_file = "#{ENV['HOME']}/.twowheeler_history"
+require 'pry-auditlog'
 Pry.config.prompt = [ proc { "% " }, proc { "  " }]
 
 
