@@ -104,9 +104,9 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
 
         error = angle - target;
 
-        correction = Kp * error +
-                     Ki * total_error +
-                     Kd * (angle - last_angle);
+        correction =   Kp * error
+                     + Ki * total_error
+                     - Kd * (angle - last_angle);
         total_error += error;
         last_error = error;
         last_angle = angle;
