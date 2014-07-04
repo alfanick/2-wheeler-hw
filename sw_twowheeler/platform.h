@@ -39,7 +39,7 @@ distance_sensor_t distance_sensors[2] = {
 lsm303d_t motion_sensor = {
   MOTION_SENSOR_CLOCK,
   MOTION_SENSOR_DATA,
-  1000
+  250
 };
 
 motors_t motors_bridge = {
