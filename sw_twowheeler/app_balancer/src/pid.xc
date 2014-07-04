@@ -9,15 +9,44 @@
                       ((x) < -(mx)) ? -(mx) :\
                       (x))
 
+int inline pid(float angle, float target, float Kp, float Ki, float Kd) {
+  static float error_integral = 0,
+               last_error = 0,
+               last_angle = 0;
+
+  if (Kp == 0 && Ki == 0 && Kd == 0) {
+    error_integral = 0;
+    last_error = 0;
+    last_angle = 0;
+
+    return 0;
+  }
+
+  float error, correction;
+
+  error = angle - target;
+  error_integral += Ki * error;
+  error_integral = CLAMP(error_integral, PWM_RESOLUTION);
+
+  correction =   Kp * error
+               + error_integral
+               - Kd * (angle - last_angle);
+
+  last_error = error;
+  last_angle = angle;
+
+  return CLAMP((int)correction, PWM_RESOLUTION);
+}
+
 [[combinable]]
 void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motors_client motors) {
   timer t; unsigned time,end,start;
-  vector3d acc, mag;
+  vector3d acc;
   unsigned balancing = 1;
   int speed;
 
   const static int sample_time = 5;
-  float correction, error, angle = 0, target = 0, error_integral = 0, last_error = 0, last_angle = 0;
+  float angle = 0, target = 0;
   float Kp = 2000.0, Ki = 4000.0 * ((float)sample_time/1000.0), Kd = 2.0 / ((float)sample_time/1000.0);
 
   motors.left(0);
@@ -36,8 +65,7 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
 
       case i[int _].balance():
         balancing = 1;
-        error_integral = 0;
-        last_error = 0;
+        pid(0, 0, 0, 0, 0);
         break;
 
       case i[int _].move_start(unsigned left, unsigned right):
@@ -56,8 +84,7 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
         Kp = (float)K[0] / 1000.0;
         Ki = (float)K[1] / 1000.0 * (((float)sample_time) / 1000.0);
         Kd = (float)K[2] / 1000.0 / (((float)sample_time) / 1000.0);
-        error_integral = 0;
-        last_error = 0;
+        pid(0, 0, 0, 0, 0);
         break;
 
       case i[int _].get_rpm(int r[2]):
@@ -80,22 +107,12 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
       case t when timerafter(time) :> void:
         t :> start;
         motion.accelerometer(acc);
-        //motion.magnetometer_raw(mag);
 
-//        debug_printf("%d %d %d\n", acc.x, acc.y, acc.z);
+        angle = sqrt(acc.y * acc.y + acc.x * acc.x);
+        angle = acc.z / angle;
+        angle = atan(angle);
 
-        float angle_acc = sqrt(acc.y * acc.y + acc.x * acc.x);
-        angle_acc = acc.z / angle_acc;
-        angle_acc = atan(angle_acc);
-/*
-        float angle_mag = sqrt(mag.y * mag.y + mag.x * mag.x);
-        angle_mag = mag.z / angle_mag;
-        angle_mag = -atan(angle_mag);
-
-        angle += angle_mag * ((float)sample_time / 1000.0);
-        angle = angle * 0.98 + angle_acc * 0.02;
-*/
-        angle = (int)(angle_acc * (180.0 / M_PI) * 10);
+        angle = (int)(angle * (180.0 / M_PI) * 10);
         angle /= 10 * 180.0 / M_PI;
 
         if (!balancing || ABS(angle * (180.0 / M_PI)) > 43) {
@@ -105,20 +122,7 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
           break;
         }
 
-        error = angle - target;
-        error_integral += Ki * error;
-        error_integral = CLAMP(error_integral, PWM_RESOLUTION);
-
-        correction =   Kp * error
-                     + error_integral
-                     - Kd * (angle - last_angle);
-        last_error = error;
-        last_angle = angle;
-
-  //      debug_printf("%d\n", (int)(error));
-
-        speed = CLAMP(correction, PWM_RESOLUTION);
-    //    debug_printf("%d\n", speed);
+        speed = pid(angle, target, Kp, Ki, Kd);
 
         motors.left(speed);
         motors.right(speed);
