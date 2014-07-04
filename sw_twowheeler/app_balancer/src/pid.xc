@@ -9,12 +9,12 @@
 [[combinable]]
 void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motors_client motors) {
   timer t; unsigned time;
-  vector3d acc;
+  vector3d acc, mag;
   unsigned balancing = 0;
   int speed;
 
   const static int sample_time = 5;
-  float correction, error, angle, target = 0, total_error = 0, last_error = 0;
+  float correction, error, angle = 0, target = 0, total_error = 0, last_error = 0;
   float Kp = 2000.0, Ki = 4000.0 * ((float)sample_time/1000.0), Kd = 2.0 / ((float)sample_time/1000.0);
 
   motors.left(0);
@@ -76,12 +76,23 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
 
       case t when timerafter(time) :> void:
         motion.accelerometer(acc);
+        //motion.magnetometer_raw(mag);
 
         debug_printf("%d %d %d\n", acc.x, acc.y, acc.z);
 
-        angle = sqrt(acc.y * acc.y + acc.x * acc.x);
-        angle = acc.z / angle;
-        angle = atan(angle);
+        float angle_acc = sqrt(acc.y * acc.y + acc.x * acc.x);
+        angle_acc = acc.z / angle_acc;
+        angle_acc = atan(angle_acc);
+/*
+        float angle_mag = sqrt(mag.y * mag.y + mag.x * mag.x);
+        angle_mag = mag.z / angle_mag;
+        angle_mag = -atan(angle_mag);
+
+        angle += angle_mag * ((float)sample_time / 1000.0);
+        angle = angle * 0.98 + angle_acc * 0.02;
+*/
+        angle = (int)(angle_acc * (180.0 / M_PI) * 10);
+        angle /= 10 * 180.0 / M_PI;
 
         if (!balancing || ABS(angle * (180.0 / M_PI)) > 43) {
           motors.left(0);
