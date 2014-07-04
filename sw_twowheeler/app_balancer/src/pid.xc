@@ -5,6 +5,9 @@
 #include <math.h>
 
 #define ABS(x) ((x) > 0 ? (x) : -(x))
+#define CLAMP(x, mx) (((x) > (mx)) ? (mx) :\
+                      ((x) < -(mx)) ? -(mx) :\
+                      (x))
 
 [[combinable]]
 void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motors_client motors) {
@@ -104,6 +107,7 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
 
         error = angle - target;
         error_integral += Ki * error;
+        error_integral = CLAMP(error_integral, PWM_RESOLUTION);
 
         correction =   Kp * error
                      + error_integral
@@ -113,9 +117,7 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
 
   //      debug_printf("%d\n", (int)(error));
 
-        speed = (correction > PWM_RESOLUTION) ? PWM_RESOLUTION :
-                (correction < -PWM_RESOLUTION) ? -PWM_RESOLUTION :
-                correction;
+        speed = CLAMP(correction, PWM_RESOLUTION);
     //    debug_printf("%d\n", speed);
 
         motors.left(speed);
