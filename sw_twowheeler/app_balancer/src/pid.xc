@@ -66,6 +66,7 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
 
       case i[int _].balance():
         balancing = 1;
+        angle = 0;
         pid(0, 0, 0, 0, 0);
         break;
 
@@ -113,14 +114,12 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
         t :> start;
         motion.accelerometer(acc);
 
-        angle = sqrt(acc.y * acc.y + acc.x * acc.x);
-        angle = acc.z / angle;
-        angle = atan(angle);
-        angle = roundf(angle * 180) / 180;
+        angle = atan2(acc.z, sqrt(acc.y * acc.y + acc.x * acc.x));
+        angle = roundf(angle * 180) / 180.0;
 
-        if (!balancing || ABS(angle * (180.0 / M_PI)) > 43) {
-          motors.left(0);
-          motors.right(0);
+        i[0].next();
+
+        if (!balancing) {
           time += sample_time * XS1_TIMER_KHZ;
           break;
         }

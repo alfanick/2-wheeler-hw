@@ -37,6 +37,9 @@ connect:
 run: clean all
 	@xrun --verbose --io --xscope bin/Release/$(APP_NAME).xe
 
+runonce: clean all
+	@xrun --verbose bin/Release/$(APP_NAME).xe
+
 flash: flash_flags clean
 	@xmake all
 	@xflash bin/Release/$(APP_NAME).xe
