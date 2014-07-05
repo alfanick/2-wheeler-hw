@@ -6,8 +6,8 @@
 #endif
 
 interface balancer_i {
-  void stop();
-  void balance();
+  void stop(int reason);
+  void balance(int reason);
 
   void move_start(unsigned left, unsigned right);
   void move_stop();

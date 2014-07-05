@@ -42,7 +42,7 @@ int inline pid(float angle, float target, float Kp, float Ki, float Kd) {
 void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motors_client motors) {
   timer t; unsigned time,end,start;
   vector3d acc;
-  unsigned balancing = 1;
+  int balancing = 1;
   int speed;
 
   const static int sample_time = 10;
@@ -58,16 +58,20 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
 
   while (1) {
     select {
-      case i[int _].stop():
-        balancing = 0;
-        motors.left(0);
-        motors.right(0);
+      case i[int _].stop(int reason):
+        if (reason < balancing) {
+          balancing = reason;
+          motors.left(0);
+          motors.right(0);
+        }
         break;
 
-      case i[int _].balance():
-        balancing = 1;
-        angle = 0;
-        pid(0, 0, 0, 0, 0);
+      case i[int _].balance(int reason):
+        if (reason == balancing || balancing == 1) {
+          balancing = 1;
+          angle = 0;
+          pid(0, 0, 0, 0, 0);
+        }
         break;
 
       case i[int _].move_start(unsigned left, unsigned right):
@@ -119,7 +123,9 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
 
         i[0].next();
 
-        if (!balancing) {
+        if (balancing < 1) {
+          //motors.left(0);
+          //motors.right(0);
           time += sample_time * XS1_TIMER_KHZ;
           break;
         }

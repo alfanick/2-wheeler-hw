@@ -50,11 +50,11 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
           break;
 
         if (safestrstr(command, "S") == 0) {
-          balancer.balance();
+          balancer.balance(-2);
           bluetooth.send("OK\r", 3);
         } else
         if (safestrstr(command, "X") == 0) {
-          balancer.stop();
+          balancer.stop(-2);
           bluetooth.send("OK\r", 3);
         } else
         if (safestrstr(command, "A?") == 0) {

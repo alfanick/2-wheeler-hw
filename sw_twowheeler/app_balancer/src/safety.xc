@@ -13,31 +13,22 @@ void balancer_safety(balancer_client balancer,
                      motors_status_client motors_status,
                      interface balancer_sensors_i server sensors) {
   unsigned battery = 0;
-  unsigned stopped = 0;
   unsigned current[2] = { 0, 0 };
-
-  debug_printf("in safety\n");
 
   while (1) {
     select {
       case motors_status.changed():
         int l, r;
         { l, r } = motors_status.get();
-
-        debug_printf("L %d R %d\n", l, r);
         break;
 
       case balancer.next():
         int angle = balancer.get_angle();
 
-        if (angle > 43000 || angle < -43000) {
-          balancer.stop();
-          stopped = 1;
-        } else
-        if (stopped) {
-          balancer.balance();
-          stopped = 0;
-        }
+        if (angle > 43000 || angle < -43000)
+          balancer.stop(-1);
+        else
+          balancer.balance(-1);
 
         break;
 
