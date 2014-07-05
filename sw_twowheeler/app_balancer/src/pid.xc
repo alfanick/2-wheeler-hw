@@ -42,7 +42,7 @@ int inline pid(float angle, float target, float Kp, float Ki, float Kd) {
 void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motors_client motors) {
   timer t; unsigned time,end,start;
   vector3d acc;
-  int balancing = 1;
+  int balancing = 2;
   int speed;
 
   const static int sample_time = 10;
@@ -68,7 +68,7 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
 
       case i[int _].balance(int reason):
         if (reason == balancing || balancing == 1) {
-          balancing = 1;
+          balancing = 2;
           angle = 0;
           pid(0, 0, 0, 0, 0);
         }
@@ -118,8 +118,14 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
         t :> start;
         motion.accelerometer(acc);
 
-        angle = atan2(acc.z, sqrt(acc.y * acc.y + acc.x * acc.x));
-        angle = roundf(angle * 180) / 180.0;
+        float current_angle = atan2(acc.z, sqrt(acc.y * acc.y + acc.x * acc.x));
+
+        if (balancing == 2) {
+          angle = current_angle;
+          balancing--;
+        }
+
+        angle = current_angle * (1.0-0.8) + angle * 0.8;
 
         i[0].next();
 
