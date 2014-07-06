@@ -17,7 +17,11 @@ end
 
 if ARGV.size > 0
   ARGV.each do |f|
-    next unless File.exists? f
+    if not File.exists? f
+      f = "settings/#{f}.rb"
+
+      next unless File.exists? f
+    end
 
     print "Loading '#{f}'... "
 
