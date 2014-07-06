@@ -19,10 +19,10 @@ if ARGV.size > 0
   ARGV.each do |f|
     next unless File.exists? f
 
-    print "Loading '#{ARGV[0]}'... "
+    print "Loading '#{f}'... "
 
     begin
-      require File.absolute_path(ARGV[0])
+      require File.absolute_path(f)
       puts "done."
     rescue => e
       puts "failed (#{e.message})."
