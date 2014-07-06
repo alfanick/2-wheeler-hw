@@ -40,6 +40,14 @@ class TwoWheeler
     self.angle_lowpass = 0.001 / (d + 0.001)
   end
 
+  def angle_lowpass_cutoff
+    1.0/(2*Math::PI*angle_lowpass_delay)
+  end
+
+  def angle_lowpass_cutoff=(f)
+    self.angle_lowpass_delay = 1.0/(2*Math::PI*f)
+  end
+
   def angle_lowpass=(a)
     self.alp = Integer(a * 1000.0)
   end
@@ -66,7 +74,12 @@ class TwoWheeler
     end
     @serial_port.flush_input
     @serial_port.flush_output
+    @tw = self
+    @balancer = self
+    @twowheeler = self
   end
+
+  attr_accessor :tw, :balancer, :twowheeler
 
   def method_missing(name, *args)
     name = name.to_s
