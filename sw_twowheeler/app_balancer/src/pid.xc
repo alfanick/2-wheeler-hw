@@ -41,7 +41,6 @@ int inline pid(float angle, float target, float Kp, float Ki, float Kd) {
 [[combinable]]
 void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motors_client motors) {
   timer t; unsigned time,end,start;
-  vector3d acc;
   int balancing = 2;
   int speed;
 
@@ -53,8 +52,11 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
   motors.left(0);
   motors.right(0);
 
+  //motion.set_lowpass(40);
+
   t :> time;
-  time += sample_time*XS1_TIMER_KHZ;
+  // 1 second delay for start
+  time += 1000*XS1_TIMER_KHZ;
 
   while (1) {
     select {
@@ -116,22 +118,14 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
 
       case t when timerafter(time) :> void:
         t :> start;
-        motion.accelerometer(acc);
 
-        float current_angle = atan2(acc.z, sqrt(acc.y * acc.y + acc.x * acc.x));
-
-        if (balancing == 2) {
-          angle = current_angle;
-          balancing--;
-        }
-
-        angle = current_angle * (1.0-0.8) + angle * 0.8;
+        angle = motion.get_pitch();
 
         i[0].next();
 
         if (balancing < 1) {
-          //motors.left(0);
-          //motors.right(0);
+          motors.left(0);
+          motors.right(0);
           time += sample_time * XS1_TIMER_KHZ;
           break;
         }
@@ -143,7 +137,6 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
 
         t :> end;
         loop_time = end - start;
-        //debug_printf("<%dms\n", (end-start)/XS1_TIMER_KHZ+1);
         time += sample_time * XS1_TIMER_KHZ;
         break;
     }
