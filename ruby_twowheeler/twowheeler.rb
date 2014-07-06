@@ -94,6 +94,9 @@ class TwoWheeler
 
   ALIASES = {
     'balance!'    => 's!',
+    'balance'     => 's!',
+    'start'       => 's!',
+    'stop'        => 'x!',
     'stop!'       => 'x!',
     'calibrate!'  => 't!',
     'firmware'    => 'ver?',
