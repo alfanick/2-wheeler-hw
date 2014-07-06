@@ -27,6 +27,9 @@ interface balancer_i {
 
   void set_target(int angle);
   int get_target();
+
+  void set_lowpass(int a);
+  int get_lowpass();
 };
 typedef interface balancer_i client balancer_client;
 

@@ -95,6 +95,17 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
           bluetooth.send("PID=", 4);
           bluetooth.send_numbers(K, 3);
         } else
+        if (safestrstr(command, "ALP=") == 0) {
+          int l[1];
+          parse_numbers(command, command_length, 4, l, 1);
+
+          balancer.set_lowpass(l[0]);
+          bluetooth.send("OK\r", 3);
+        } else
+        if (safestrstr(command, "ALP?") == 0) {
+          bluetooth.send("ALP=", 4);
+          bluetooth.send_number(balancer.get_lowpass());
+        } else
         if (safestrstr(command, "RPM?") == 0) {
           int r[2];
           balancer.get_rpm(r);

@@ -28,6 +28,14 @@ class TwoWheeler
     method_missing('t=', Integer(a * 1000.0) )
   end
 
+  def angle_lowpass
+    alp? / 1000.0
+  end
+
+  def angle_lowpass=(a)
+    self.alp = Integer(a * 1000.0)
+  end
+
   def angle
     a? / 1000.0
   end

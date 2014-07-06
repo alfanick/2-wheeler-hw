@@ -116,6 +116,14 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
         a = (int)(target * 180.0 / M_PI * 1000);
         break;
 
+      case i[int _].get_lowpass() -> int a:
+        a = motion.get_lowpass();
+        break;
+
+      case i[int _].set_lowpass(int a):
+        motion.set_lowpass(a);
+        break;
+
       case t when timerafter(time) :> void:
         t :> start;
 
