@@ -5,14 +5,29 @@ require './twowheeler.rb'
 
 puts "Welcome to balancer console!"
 print "Connecting... "
-$balancer = TwoWheeler.new
 
-puts "done."
-
-if ARGV.size > 0 and File.exists? ARGV[0]
-  print "Loading '#{ARGV[0]}'... "
-  require File.absolute_path(ARGV[0])
+begin
+  $balancer = TwoWheeler.new
   puts "done."
+rescue => e
+  puts "failed (#{e.message})."
+
+  Kernel.exit 1
+end
+
+if ARGV.size > 0
+  ARGV.each do |f|
+    next unless File.exists? f
+
+    print "Loading '#{ARGV[0]}'... "
+
+    begin
+      require File.absolute_path(ARGV[0])
+      puts "done."
+    rescue => e
+      puts "failed (#{e.message})."
+    end
+  end
 end
 
 require 'pry'
