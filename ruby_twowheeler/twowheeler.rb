@@ -32,6 +32,14 @@ class TwoWheeler
     alp? / 1000.0
   end
 
+  def angle_lowpass_delay
+    0.001 / angle_lowpass - 0.001
+  end
+
+  def angle_lowpass_delay=(d)
+    self.angle_lowpass = 0.001 / (d + 0.001)
+  end
+
   def angle_lowpass=(a)
     self.alp = Integer(a * 1000.0)
   end
