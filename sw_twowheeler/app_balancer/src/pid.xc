@@ -46,8 +46,8 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
 
   const static int sample_time = 10;
   unsigned loop_time = 0;
-  float angle = 0, target = -0.011100294042684;
-  float Kp = 600.0, Ki = 350000.0 * ((float)sample_time/1000.0), Kd = 0.5 / ((float)sample_time/1000.0);
+  float angle = 0, target = 0;
+  float Kp = 50.0, Ki = 30.0 * ((float)sample_time/1000.0), Kd = 0.0 / ((float)sample_time/1000.0);
 
   motors.left(0);
   motors.right(0);
@@ -124,8 +124,6 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
         i[0].next();
 
         if (balancing < 1) {
-          motors.left(0);
-          motors.right(0);
           time += sample_time * XS1_TIMER_KHZ;
           break;
         }
