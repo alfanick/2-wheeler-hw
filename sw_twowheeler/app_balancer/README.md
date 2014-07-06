@@ -19,6 +19,8 @@ read.
 | T=a         | set target angle               |
 | T           | set current angle as target    |
 | A?          | get current pitch angle        |
+| ALP?        | get current low pass coeff     |
+| ALP=a       | set angle low pass coefficient |
 | S           | starts balancing               |
 | X           | stop balancing                 |
 | VER?        | get firmware version           |
@@ -36,5 +38,6 @@ read.
 | RPM=l,r     | current motor RPM              |
 | T=a         | current target angle           |
 | A=a         | current pitch angle            |
+| ALP=a       | current angle low pass coeff   |
 | VER=v       | firmware git commit id         |
 | LOOPTIME=v  | last loop execution time in ms |
