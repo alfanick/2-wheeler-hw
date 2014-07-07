@@ -1,8 +1,9 @@
 $balancer.stop!
 
-$balancer.angle_loop_delay = 0.02
-$balancer.angle_lowpass_delay = 0.009
-$balancer.pid = [950, 700, 0]
+$balancer.loop_delay = 0.01
+$balancer.angle_lowpass_delay = 0.0048
+$balancer.pid = [1950.0, 2500.0, -1.0]
+$balancer.target = -1.0
 
 $balancer.balance!
 
