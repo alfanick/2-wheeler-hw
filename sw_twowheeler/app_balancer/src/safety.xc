@@ -34,11 +34,21 @@ void balancer_safety(balancer_client balancer,
 
       case adc.complete():
         unsigned short adc_val[4] = { 0, 0, 0, 0 };
+        int reading = 0;
 
         adc.read(adc_val);
-        battery = adc_val[3] * 15350 / 65535;
-        current[0] = adc_val[0] * 6255 / 65535;
-        current[1] = adc_val[1] * 6255 / 65535;
+
+        reading = adc_val[3] * 15350 / 65535;
+        battery = 950 * battery + 50 * reading;
+        battery /= 1000;
+
+        reading = adc_val[0] * 6255 / 65535;
+        current[0] = 950 * current[0] + 50 * reading;
+        current[0] /= 1000;
+
+        reading = adc_val[1] * 6255 / 65535;
+        current[1] = 950 * current[1] + 50 * reading;
+        current[1] /= 1000;
 
         if (battery > 11800)
           leds <: ~(1<<7);
