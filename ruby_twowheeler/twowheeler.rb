@@ -2,6 +2,9 @@ require 'rubygems'
 require 'serialport'
 
 class TwoWheeler
+  def github
+    "https://github.com/alfanick/2-wheeler-hw/commit/#{version}"
+  end
 
   def battery
     v / 1000.0
