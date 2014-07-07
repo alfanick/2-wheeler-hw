@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'rubygems'
+require 'awesome_print'
 require './twowheeler.rb'
 
 puts "Welcome to balancer console!"

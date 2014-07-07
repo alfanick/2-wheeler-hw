@@ -13,7 +13,7 @@ The robot is solving physical problem of inverted pendulum using PID regulator c
 ## Parts
 
 * XMOS firmware - more in [balancer README](sw_twowheeler/app_balancer/README.md)
-* computer app - API available in Ruby and console command interface with scripting
+* computer app - API available in Ruby and console command interface with scripting (more in [documentation](ruby_twowheeler/README.md))
 * circuit schematic and PCB design
 * hardware design - not yet documented
 

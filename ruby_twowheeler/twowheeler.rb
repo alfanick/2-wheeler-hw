@@ -1,6 +1,5 @@
 require 'rubygems'
 require 'serialport'
-require 'awesome_print'
 
 class TwoWheeler
 
