@@ -4,6 +4,7 @@
 #include <debug_print.h>
 #include <math.h>
 
+#define safety i[0]
 #define ABS(x) ((x) > 0 ? (x) : -(x))
 #define CLAMP(x, mx) (((x) > (mx)) ? (mx) :\
                       ((x) < -(mx)) ? -(mx) :\
@@ -146,7 +147,7 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
 
         angle = motion.get_pitch();
 
-        i[0].next();
+        safety.next();
 
         if (balancing < 1)
           break;
