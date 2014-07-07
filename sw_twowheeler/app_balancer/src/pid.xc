@@ -53,14 +53,31 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
   motors.left(0);
   motors.right(0);
 
-  //motion.set_lowpass(40);
-
   t :> time;
   // 1 second delay for start
   time += 1000*XS1_TIMER_KHZ;
 
   while (1) {
     select {
+      case t when timerafter(time) :> void:
+        time += loop_delay * XS1_TIMER_KHZ;
+        t :> start;
+
+        angle = motion.get_pitch();
+
+        safety.next();
+
+        if (balancing > 0) {
+          speed = pid(angle, target, Kp, Ki, Kd);
+
+          motors.left(speed);
+          motors.right(speed);
+        }
+
+        t :> end;
+        loop_time = end - start;
+        break;
+
       case i[int _].stop(int reason):
         if (reason < balancing) {
           balancing = reason;
@@ -138,26 +155,6 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
 
       case i[int _].set_lowpass(int a):
         motion.set_lowpass(a);
-        break;
-
-      case t when timerafter(time) :> void:
-        time += loop_delay * XS1_TIMER_KHZ;
-        t :> start;
-
-        angle = motion.get_pitch();
-
-        safety.next();
-
-        if (balancing < 1)
-          break;
-
-        speed = pid(angle, target, Kp, Ki, Kd);
-
-        motors.left(speed);
-        motors.right(speed);
-
-        t :> end;
-        loop_time = end - start;
         break;
     }
   }
