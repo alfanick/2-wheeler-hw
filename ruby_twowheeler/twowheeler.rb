@@ -20,8 +20,16 @@ class TwoWheeler
     t? / 1000.0
   end
 
-  def looptime
+  def loop_time
     looptime? / 100000000.0
+  end
+
+  def loop_delay
+    loopdelay? / 1000.0
+  end
+
+  def loop_delay=(t)
+    method_missing('loopdelay=', Integer(t * 1000.0))
   end
 
   def target=(a)

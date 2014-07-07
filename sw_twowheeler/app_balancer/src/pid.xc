@@ -44,10 +44,10 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
   int balancing = 2;
   int speed;
 
-  const static int sample_time = 10;
+  int loop_delay = 10;
   unsigned loop_time = 0;
   float angle = 0, target = 0;
-  float Kp = 50.0, Ki = 30.0 * ((float)sample_time/1000.0), Kd = 0.0 / ((float)sample_time/1000.0);
+  float Kp = 50.0, Ki = 30.0 * ((float)loop_delay/1000.0), Kd = 0.0 / ((float)loop_delay/1000.0);
 
   motors.left(0);
   motors.right(0);
@@ -88,15 +88,30 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
 
       case i[int _].get_pid(int K[3]):
         K[0] = (int)(Kp * 1000);
-        K[1] = (int)(Ki * 1000 / (((float)sample_time) / 1000.0));
-        K[2] = (int)(Kd * 1000 * (((float)sample_time) / 1000.0));
+        K[1] = (int)(Ki * 1000 / (((float)loop_delay) / 1000.0));
+        K[2] = (int)(Kd * 1000 * (((float)loop_delay) / 1000.0));
         break;
 
       case i[int _].set_pid(int K[3]):
         Kp = (float)K[0] / 1000.0;
-        Ki = (float)K[1] / 1000.0 * (((float)sample_time) / 1000.0);
-        Kd = (float)K[2] / 1000.0 / (((float)sample_time) / 1000.0);
+        Ki = (float)K[1] / 1000.0 * (((float)loop_delay) / 1000.0);
+        Kd = (float)K[2] / 1000.0 / (((float)loop_delay) / 1000.0);
         pid(0, 0, 0, 0, 0);
+        break;
+
+      case i[int _].set_loop_delay(int t):
+        if (t > 0) {
+          const float ratio = (float)t / (float)loop_delay;
+
+          Ki *= ratio;
+          Kd /= ratio;
+
+          loop_delay = t;
+        }
+        break;
+
+      case i[int _].get_loop_delay() -> int t:
+        t = loop_delay;
         break;
 
       case i[int _].get_rpm(int r[2]):
@@ -125,16 +140,16 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
         break;
 
       case t when timerafter(time) :> void:
+        time += loop_delay * XS1_TIMER_KHZ;
+
         t :> start;
 
         angle = motion.get_pitch();
 
         i[0].next();
 
-        if (balancing < 1) {
-          time += sample_time * XS1_TIMER_KHZ;
+        if (balancing < 1)
           break;
-        }
 
         speed = pid(angle, target, Kp, Ki, Kd);
 
@@ -143,7 +158,6 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
 
         t :> end;
         loop_time = end - start;
-        time += sample_time * XS1_TIMER_KHZ;
         break;
     }
   }

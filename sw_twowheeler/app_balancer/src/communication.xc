@@ -119,6 +119,17 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
         if (safestrstr(command, "LOOPTIME?") == 0) {
           bluetooth.send("LOOPTIME=", 9);
           bluetooth.send_number(balancer.get_loop_time());
+        } else
+        if (safestrstr(command, "LOOPDELAY?") == 0) {
+          bluetooth.send("LOOPDELAY=", 10);
+          bluetooth.send_number(balancer.get_loop_delay());
+        } else
+        if (safestrstr(command, "LOOPDELAY=") == 0) {
+          int t[1];
+          parse_numbers(command, command_length, 10, t, 1);
+
+          balancer.set_loop_delay(t[0]);
+          bluetooth.send("OK\r", 3);
         }
         else
           bluetooth.send("ERROR\r", 6);

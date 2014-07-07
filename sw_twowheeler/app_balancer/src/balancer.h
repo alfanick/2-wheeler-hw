@@ -30,6 +30,9 @@ interface balancer_i {
 
   void set_lowpass(int a);
   int get_lowpass();
+
+  void set_loop_delay(int a);
+  int get_loop_delay();
 };
 typedef interface balancer_i client balancer_client;
 

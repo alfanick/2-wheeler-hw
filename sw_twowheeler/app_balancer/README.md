@@ -25,6 +25,8 @@ read.
 | X           | stop balancing                 |
 | VER?        | get firmware version           |
 | LOOPTIME?   | get last loop execution time   |
+| LOOPDELAY?  | get loop delay                 |
+| LOOPDELAY=t | set loop delay                 |
 
 
 ### Replies
@@ -41,3 +43,4 @@ read.
 | ALP=a       | current angle low pass coeff   |
 | VER=v       | firmware git commit id         |
 | LOOPTIME=v  | last loop execution time in ms |
+| LOOPDELAY=t | current loop delay in ms       |
