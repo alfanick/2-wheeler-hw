@@ -43,11 +43,11 @@ void balancer_safety(balancer_client balancer,
         battery /= 1000;
 
         reading = adc_val[0] * 6255 / 65535;
-        current[0] = 950 * current[0] + 50 * reading;
+        current[0] = 850 * current[0] + 150 * reading;
         current[0] /= 1000;
 
         reading = adc_val[1] * 6255 / 65535;
-        current[1] = 950 * current[1] + 50 * reading;
+        current[1] = 850 * current[1] + 150 * reading;
         current[1] /= 1000;
 
         if (battery > 11800)
