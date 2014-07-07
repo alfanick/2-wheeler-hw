@@ -54,6 +54,12 @@ void balancer_safety(balancer_client balancer,
       case sensors.battery_voltage() -> unsigned voltage:
         voltage = battery;
         break;
+
+      case sensors.motors_current() -> { unsigned left, unsigned right }:
+        left = current[0];
+        right = current[1];
+        break;
+
     }
   }
 }

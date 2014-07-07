@@ -9,6 +9,7 @@
 
 interface balancer_sensors_i {
   unsigned battery_voltage();
+  { unsigned, unsigned } motors_current();
 };
 typedef interface balancer_sensors_i client balancer_sensors_client;
 

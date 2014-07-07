@@ -8,6 +8,14 @@ class TwoWheeler
     v / 1000.0
   end
 
+  def motors_current
+    c?.map{|a| a/1000.0}
+  end
+
+  def motors_rpm
+    rpm?
+  end
+
   def pid
     pid?.map{|a| a/1000.0}
   end

@@ -80,6 +80,13 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
           bluetooth.send("V=", 2);
           bluetooth.send_number(sensors.battery_voltage());
         } else
+        if (safestrstr(command, "C?") == 0) {
+          int c[2];
+          { c[0], c[1] } = sensors.motors_current();
+
+          bluetooth.send("C=", 2);
+          bluetooth.send_numbers(c, 2);
+        } else
         if (safestrstr(command, "PID=") == 0) {
           int K[3];
           parse_numbers(command, command_length, 4, K, 3);

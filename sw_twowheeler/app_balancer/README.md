@@ -21,6 +21,7 @@ read.
 | A?          | get current pitch angle        |
 | ALP?        | get current low pass coeff     |
 | ALP=a       | set angle low pass coefficient |
+| C?          | get motors current             |
 | S           | starts balancing               |
 | X           | stop balancing                 |
 | VER?        | get firmware version           |
@@ -38,6 +39,7 @@ read.
 | V=n         | battery voltage in mV          |
 | PID=p,i,d   | current PID coefficients       |
 | RPM=l,r     | current motor RPM              |
+| C=l,r       | motors current                 |
 | T=a         | current target angle           |
 | A=a         | current pitch angle            |
 | ALP=a       | current angle low pass coeff   |
