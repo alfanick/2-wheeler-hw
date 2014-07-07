@@ -142,7 +142,6 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
 
       case t when timerafter(time) :> void:
         time += loop_delay * XS1_TIMER_KHZ;
-
         t :> start;
 
         angle = motion.get_pitch();
