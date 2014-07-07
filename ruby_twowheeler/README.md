@@ -13,7 +13,17 @@ serial port.
 
 ## Command Line Interface
 
-Lorem ipsum
+CLI is based on Pry - great Ruby console. You need pry and awesome_print gems to run CLI (and serialport as requirment of API). 
+
+CLI works inside API - every command available in API (documented below)
+is available in console. As in API, you can use helper commands or
+directly raw balancer commands (they are translated from Ruby to text).
+
+You still can enjoy power of Ruby language - console just works inside
+TwoWheeler context instead of default context, so every Ruby feature is
+available to you.
+
+TODO: Write about twowheeler/tw/balancer/$balancer
 
 ## API (twowheeler.rb)
 
