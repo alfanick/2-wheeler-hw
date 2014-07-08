@@ -49,12 +49,26 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
         if (safestrstr(command, "ERROR") == 0)
           break;
 
-        if (safestrstr(command, "S") == 0) {
-          balancer.balance(-2);
+        if (safestrstr(command, "SB?") == 0) {
+          bluetooth.send("SB=", 3);
+          bluetooth.send_number(balancer.get_speed_boost());
+        } else
+        if (safestrstr(command, "SB=") == 0) {
+          int a;
+          parse_numbers(command, command_length, 3, &a, 1);
+
+          balancer.set_speed_boost(a);
           bluetooth.send("OK\r", 3);
         } else
-        if (safestrstr(command, "X") == 0) {
-          balancer.stop(-2);
+        if (safestrstr(command, "ST?") == 0) {
+          bluetooth.send("ST=", 3);
+          bluetooth.send_number(balancer.get_speed_threshold());
+        } else
+        if (safestrstr(command, "ST=") == 0) {
+          int a;
+          parse_numbers(command, command_length, 3, &a, 1);
+
+          balancer.set_speed_threshold(a);
           bluetooth.send("OK\r", 3);
         } else
         if (safestrstr(command, "A?") == 0) {
@@ -74,6 +88,14 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
         } else
         if (safestrstr(command, "T") == 0) {
           balancer.set_target(balancer.get_angle());
+          bluetooth.send("OK\r", 3);
+        } else
+        if (safestrstr(command, "S") == 0) {
+          balancer.balance(-2);
+          bluetooth.send("OK\r", 3);
+        } else
+        if (safestrstr(command, "X") == 0) {
+          balancer.stop(-2);
           bluetooth.send("OK\r", 3);
         } else
         if (safestrstr(command, "V?") == 0) {

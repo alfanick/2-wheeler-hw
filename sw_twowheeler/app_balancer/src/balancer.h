@@ -33,6 +33,12 @@ interface balancer_i {
 
   void set_loop_delay(int a);
   int get_loop_delay();
+
+  void set_speed_threshold(int a);
+  int get_speed_threshold();
+
+  void set_speed_boost(int a);
+  int get_speed_boost();
 };
 typedef interface balancer_i client balancer_client;
 

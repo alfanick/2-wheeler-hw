@@ -111,14 +111,18 @@ class TwoWheeler
   private
 
   ALIASES = {
-    'balance!'    => 's!',
-    'balance'     => 's!',
-    'start'       => 's!',
-    'stop'        => 'x!',
-    'stop!'       => 'x!',
-    'calibrate!'  => 't!',
-    'firmware'    => 'ver?',
-    'version'     => 'ver?'
+    'balance!'         => 's!',
+    'balance'          => 's!',
+    'start'            => 's!',
+    'stop'             => 'x!',
+    'stop!'            => 'x!',
+    'calibrate!'       => 't!',
+    'firmware'         => 'ver?',
+    'version'          => 'ver?',
+    'speed_boost'      => 'sb?',
+    'speed_boost='     => 'sb=',
+    'speed_threshold'  => 'st?',
+    'speed_threshold=' => 'st='
   }
 
   def create_command(name, args)

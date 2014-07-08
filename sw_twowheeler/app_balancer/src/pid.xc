@@ -39,12 +39,21 @@ int inline pid(float angle, float target, float Kp, float Ki, float Kd) {
   return CLAMP((int)correction, PWM_RESOLUTION);
 }
 
+inline int scale_speed(int speed, int boost, int threshold) {
+  if (speed == 0 || (speed > -threshold && speed < threshold))
+    return 0;
+
+  return speed * (PWM_RESOLUTION - boost) / PWM_RESOLUTION +
+         (speed < 0 ? -boost : boost);
+}
+
 [[combinable]]
 void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motors_client motors) {
   timer t; unsigned time,end,start;
   int balancing = 2;
   int speed;
 
+  int speed_boost = 500, speed_threshold = 0;
   int loop_delay = 10;
   unsigned loop_time = 0;
   float angle = 0, target = 0;
@@ -69,6 +78,7 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
 
         if (balancing > 0) {
           speed = pid(angle, target, Kp, Ki, Kd);
+          speed = scale_speed(speed, speed_boost, speed_threshold);
 
           motors.left(speed);
           motors.right(speed);
@@ -155,6 +165,22 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
 
       case i[int _].set_lowpass(int a):
         motion.set_lowpass(a);
+        break;
+
+      case i[int _].set_speed_threshold(int a):
+        speed_threshold = a;
+        break;
+
+      case i[int _].get_speed_threshold() -> int a:
+        a = speed_threshold;
+        break;
+
+      case i[int _].set_speed_boost(int a):
+        speed_boost = a;
+        break;
+
+      case i[int _].get_speed_boost() -> int a:
+        a = speed_boost;
         break;
     }
   }

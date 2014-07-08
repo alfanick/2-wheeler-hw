@@ -28,6 +28,10 @@ read.
 | LOOPTIME?   | get last loop execution time   |
 | LOOPDELAY?  | get loop delay                 |
 | LOOPDELAY=t | set loop delay                 |
+| SB?         | get speed boost                |
+| SB=a        | set speed boost                |
+| ST?         | get speed threshold            |
+| ST=a        | set speed threshold            |
 
 
 ### Replies
@@ -46,3 +50,5 @@ read.
 | VER=v       | firmware git commit id         |
 | LOOPTIME=v  | last loop execution time in ms |
 | LOOPDELAY=t | current loop delay in ms       |
+| SB=a        | current speed boost            |
+| ST=a        | current speed threshold        |
