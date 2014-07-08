@@ -82,6 +82,11 @@ class TwoWheeler
     angle
   end
 
+  attr_accessor :tw, :balancer, :twowheeler
+
+
+  private
+
   def initialize(path="/dev/tty.TwoWheeler-SPP")
     @serial_port = SerialPort.new("/dev/tty.TwoWheeler-SPP",
                                   9600, 8, 1, SerialPort::NONE)
@@ -95,20 +100,21 @@ class TwoWheeler
     @tw = self
     @balancer = self
     @twowheeler = self
-  end
 
-  attr_accessor :tw, :balancer, :twowheeler
+    ALIASES.each do |method, substitute|
+      self.class.send(:define_method, method) do |*args|
+        send(substitute, *args)
+      end
+    end
+  end
 
   def method_missing(name, *args)
     name = name.to_s
-    name = ALIASES[name] if ALIASES.include? name
 
     @serial_port.write create_command(name, args=args)
 
     parse_response @serial_port.readline("\r").rstrip
   end
-
-  private
 
   ALIASES = {
     'balance!'         => 's!',
