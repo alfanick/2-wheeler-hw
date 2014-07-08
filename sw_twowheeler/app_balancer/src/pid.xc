@@ -1,5 +1,9 @@
 #include "pid.h"
 
+#define DEBUG_SAMPLES_COUNT 1000
+#define DEBUG_SAMPLES_DELAY 5000
+//#define DEBUG_SAMPLES_ENABLE
+
 #define DEBUG_PRINT_ENABLE 0
 #include <debug_print.h>
 #include <math.h>
@@ -51,11 +55,19 @@ inline int scale_speed(int speed, int boost, int threshold) {
 void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motors_client motors) {
   timer t; unsigned time,end,start;
   int balancing = 2;
-  int speed;
+  int speed, last_speed = 0;
+
+#ifdef DEBUG_SAMPLES_ENABLE
+  float debug_samples_angle[DEBUG_SAMPLES_COUNT];
+  int debug_samples_pid[DEBUG_SAMPLES_COUNT];
+  int debug_samples_speed[DEBUG_SAMPLES_COUNT];
+  int debug_current_sample = 0;
+#endif
 
   int speed_boost = 500, speed_threshold = 0;
   int loop_delay = 10;
   unsigned loop_time = 0;
+  int lowpass = 1000;
   float angle = 0, target = 0;
   float Kp = 50.0, Ki = 30.0 * ((float)loop_delay/1000.0), Kd = 0.0 / ((float)loop_delay/1000.0);
 
@@ -78,11 +90,36 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
 
         if (balancing > 0) {
           speed = pid(angle, target, Kp, Ki, Kd);
+          speed = last_speed * (1000 - lowpass) + speed * lowpass;
+          speed /= 1000;
+          last_speed = speed;
+#ifdef DEBUG_SAMPLES_ENABLE
+          debug_samples_pid[debug_current_sample] = speed;
+#endif
           speed = scale_speed(speed, speed_boost, speed_threshold);
+#ifdef DEBUG_SAMPLES_ENABLE
+          debug_samples_speed[debug_current_sample] = speed;
+#endif
 
           motors.left(speed);
           motors.right(speed);
         }
+
+#ifdef DEBUG_SAMPLES_ENABLE
+          debug_samples_angle[debug_current_sample] = angle;
+
+          if (time > DEBUG_SAMPLES_DELAY * XS1_TIMER_KHZ) {
+            debug_current_sample++;
+          }
+
+          if (debug_current_sample == DEBUG_SAMPLES_COUNT) {
+            for (int i = 0; i < DEBUG_SAMPLES_COUNT; i++) {
+              debug_printf("%d,%d,%d\n", (int)(debug_samples_angle[i]*1000.0), debug_samples_pid[i], debug_samples_speed[i]);
+            }
+
+            debug_current_sample == 0;
+          }
+#endif
 
         t :> end;
         loop_time = end - start;
@@ -100,6 +137,7 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
         if (reason == balancing || balancing == 1) {
           balancing = 2;
           angle = 0;
+          last_speed = 0;
           pid(0, 0, 0, 0, 0);
         }
         break;
@@ -181,6 +219,14 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
 
       case i[int _].get_speed_boost() -> int a:
         a = speed_boost;
+        break;
+
+      case i[int _].set_pid_lowpass(int a):
+        lowpass = a;
+        break;
+
+      case i[int _].get_pid_lowpass() -> int a:
+        a = lowpass;
         break;
     }
   }

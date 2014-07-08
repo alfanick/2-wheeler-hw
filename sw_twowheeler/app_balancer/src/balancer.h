@@ -15,6 +15,9 @@ interface balancer_i {
   void get_pid(int K[3]);
   void set_pid(int K[3]);
 
+  int get_pid_lowpass();
+  void set_pid_lowpass(int a);
+
   void get_rpm(int r[2]);
 
   [[notification]]
