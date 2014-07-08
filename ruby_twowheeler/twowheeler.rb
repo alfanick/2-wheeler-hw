@@ -122,7 +122,11 @@ class TwoWheeler
     'speed_boost'      => 'sb?',
     'speed_boost='     => 'sb=',
     'speed_threshold'  => 'st?',
-    'speed_threshold=' => 'st='
+    'speed_threshold=' => 'st=',
+    'motors_boost'     => 'sb?',
+    'motors_boost='    => 'sb=',
+    'motors_threshold' => 'st?',
+    'motors_threshold='=> 'st='
   }
 
   def create_command(name, args)
