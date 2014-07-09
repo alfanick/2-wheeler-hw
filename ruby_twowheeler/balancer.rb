@@ -8,7 +8,7 @@ puts "Welcome to balancer console!"
 print "Connecting... "
 
 begin
-  $balancer = TwoWheeler.new
+  $balancer = TwoWheeler.instance
   puts "done."
 rescue => e
   puts "failed (#{e.message})."

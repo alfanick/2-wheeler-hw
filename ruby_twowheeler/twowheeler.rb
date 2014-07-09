@@ -1,7 +1,20 @@
 require 'rubygems'
 require 'serialport'
+require 'singleton'
 
 class TwoWheeler
+  include Singleton
+
+  class FlashProxy
+    include Singleton
+
+    def method_missing(name, *args)
+      puts "WILL SAVE THIS TO MEMORY"
+      TwoWheeler.instance.send(name, *args)
+    end
+  end
+
+
   def github
     "https://github.com/alfanick/2-wheeler-hw/commit/#{version}"
   end
@@ -108,6 +121,10 @@ class TwoWheeler
     angle
   end
 
+  def flash
+    FlashProxy.instance
+  end
+
   attr_reader :tw, :balancer, :twowheeler
 
 
@@ -174,17 +191,21 @@ class TwoWheeler
   end
 
   def parse_response(response)
-    if response == "OK"
-      return true
-    elsif response == "ERROR"
-      return false
-    else
-      args = /^.*?=(.*)/.match(response)[1]
-      args = args.split(',').map do |a|
-        a.to_i if !!Integer(a) rescue a
-      end
+    begin
+      if response == "OK"
+        return true
+      elsif response == "ERROR"
+        return false
+      else
+        args = /^.*?=(.*)/.match(response)[1]
+        args = args.split(',').map do |a|
+          a.to_i if !!Integer(a) rescue a
+        end
 
-      args.size == 1 ? args[0] : args
+        args.size == 1 ? args[0] : args
+      end
+    rescue
+      return false
     end
   end
 end
