@@ -108,7 +108,7 @@ class TwoWheeler
     angle
   end
 
-  attr_accessor :tw, :balancer, :twowheeler
+  attr_reader :tw, :balancer, :twowheeler
 
 
   private
@@ -151,10 +151,6 @@ class TwoWheeler
     'calibrate!'       => 't!',
     'firmware'         => 'ver?',
     'version'          => 'ver?',
-    'speed_boost'      => 'sb?',
-    'speed_boost='     => 'sb=',
-    'speed_threshold'  => 'st?',
-    'speed_threshold=' => 'st=',
     'motors_boost'     => 'sb?',
     'motors_boost='    => 'sb=',
     'motors_threshold' => 'st?',
