@@ -125,7 +125,7 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
           bluetooth.send_numbers(K, 3);
         } else
         if (safestrstr(command, "PIDLP?") == 0) {
-          bluetooth.send("PIDLP?", 6);
+          bluetooth.send("PIDLP=", 6);
           bluetooth.send_number(balancer.get_pid_lowpass());
         } else
         if (safestrstr(command, "PIDLP=") == 0) {
