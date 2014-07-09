@@ -14,6 +14,8 @@ read.
 | V?          | get battery voltage            |
 | PID?        | get current PID coefficients   |
 | PID=p,i,d   | set PID coefficients           |
+| PIDLP?      | get current PID lowpass coeff  |
+| PIDLP=a     | set PID lowpass coefficient    |
 | RPM?        | get RPM of motors              |
 | T?          | get target angle               |
 | T=a         | set target angle               |
@@ -42,6 +44,7 @@ read.
 | ERROR       | malformed command              |
 | V=n         | battery voltage in mV          |
 | PID=p,i,d   | current PID coefficients       |
+| PIDLP=a     | current PID lowpass coefficient|
 | RPM=l,r     | current motor RPM              |
 | C=l,r       | motors current                 |
 | T=a         | current target angle           |

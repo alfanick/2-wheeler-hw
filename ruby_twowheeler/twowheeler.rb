@@ -46,6 +46,32 @@ class TwoWheeler
     method_missing('t=', Integer(a * 1000.0) )
   end
 
+  def pid_lowpass
+    pidlp? / 1000.0
+  end
+
+  def pid_lowpass_delay
+    dt = loop_delay
+    dt / pid_lowpass - dt
+  end
+
+  def pid_lowpass_delay=(d)
+    dt = loop_delay
+    self.pid_lowpass = dt / (d + dt)
+  end
+
+  def pid_lowpass_cutoff
+    1.0/(2*Math::PI*pid_lowpass_delay)
+  end
+
+  def pid_lowpass_cutoff=(f)
+    self.pid_lowpass_delay = 1.0/(2*Math::PI*f)
+  end
+
+  def pid_lowpass=(a)
+    self.pidlp = Integer(a * 1000.0)
+  end
+
   def angle_lowpass
     alp? / 1000.0
   end
