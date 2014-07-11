@@ -1,9 +1,11 @@
 #ifndef APP_BALANCER_COMMUNICATION_H_
 #define APP_BALANCER_COMMUNICATION_H_
 
+#include <config.h>
 #include "balancer.h"
 #include "bluetooth.h"
 #include "safety.h"
+
 
 enum config_properties {
   BALANCER_SPEED_BOOST = 0,

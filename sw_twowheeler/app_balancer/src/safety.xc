@@ -15,7 +15,8 @@ void balancer_safety(balancer_client balancer,
   unsigned battery = 0;
   unsigned current[2] = { 0, 0 };
 
-  unsigned adc_available = 1;
+  int adc_available = 0;
+
 
   while (1) {
     select {
@@ -75,14 +76,15 @@ void balancer_safety(balancer_client balancer,
         right = current[1];
         break;
 
-      case sensors.acquire_adc():
+      case sensors.acquire_adc() -> in buffered port:8 * movable miso:
         adc_available = 0;
 
-        // change port to miso
+        miso = adc.miso_from_trigger();
         break;
 
-      case sensors.release_adc():
-        // change port to 1 bit
+      case sensors.release_adc(in buffered port:8 * movable miso):
+        debug_printf("got adc\n");
+        adc.trigger_from_miso(move(miso));
 
         adc_available = 1;
         break;

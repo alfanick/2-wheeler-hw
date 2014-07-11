@@ -11,8 +11,10 @@ interface balancer_sensors_i {
   unsigned battery_voltage();
   { unsigned, unsigned } motors_current();
 
-  void acquire_adc();
-  void release_adc();
+  in buffered port:8 * movable acquire_adc();
+
+  void release_adc(in buffered port:8 * movable miso);
+
 };
 typedef interface balancer_sensors_i client balancer_sensors_client;
 

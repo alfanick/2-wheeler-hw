@@ -4,11 +4,22 @@
 #include <debug_print.h>
 #include <safestring.h>
 
+config_flash_port flash_memory = {
+  PORT_SPI_MISO,
+  PORT_SPI_SS,
+  PORT_SPI_CLK,
+  PORT_SPI_MOSI,
+  XS1_CLKBLK_2
+};
+
 [[combinable]]
 void balancer_communication(balancer_client balancer, bluetooth_client bluetooth, balancer_sensors_client sensors) {
   unsigned char command[128];
   int command_length;
   int flash = 0;
+
+  in buffered port:8 * movable miso = &flash_memory.spiMISO;
+  sensors.release_adc(move(miso));
 
   while (1) {
     select {
@@ -21,11 +32,16 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
         if (safestrstr(command, "ERROR") == 0)
           break;
 
-        if (safestrstr(command, "FLASH") == 0) {
+        if (!flash && safestrstr(command, "FLASH") == 0) {
           flash = 1;
 
-          sensors.acquire_adc();
-          // config_open();
+          miso = sensors.acquire_adc();
+//        config_open(flash_memory);
+
+//          int k = -284;
+//          config_save(BALANCER_LOOPDELAY, &k, 1);
+//          config_read(BALANCER_LOOPDELAY, &k, 1);
+//          debug_printf("read %d\n", k);
 
           bluetooth.send("OK\r", 3);
           break;
@@ -156,10 +172,10 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
         else
           bluetooth.send("ERROR\r", 6);
 
-        if (flash) {
+        if (flash == 1) {
           flash = 0;
-          // config_close();
-          // sensors.release_adc();
+          //config_close();
+          sensors.release_adc(move(miso));
         }
 
         break;
