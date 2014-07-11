@@ -125,9 +125,6 @@ class TwoWheeler
     FlashProxy.instance
   end
 
-  attr_reader :tw, :balancer, :twowheeler
-
-
   private
 
   def initialize(path="/dev/tty.TwoWheeler-SPP")
@@ -140,9 +137,6 @@ class TwoWheeler
     end
     @serial_port.flush_input
     @serial_port.flush_output
-    @tw = self
-    @balancer = self
-    @twowheeler = self
 
     ALIASES.each do |method, substitute|
       self.class.send(:define_method, method) do |*args|
@@ -152,6 +146,7 @@ class TwoWheeler
   end
 
   def method_missing(name, *args)
+    return self if name == :self
     name = name.to_s
 
     @serial_port.write create_command(name, args=args)
@@ -160,6 +155,10 @@ class TwoWheeler
   end
 
   ALIASES = {
+    'tw'               => 'self',
+    'balancer'         => 'self',
+    'twowheeler'       => 'self',
+
     'balance!'         => 's!',
     'balance'          => 's!',
     'start'            => 's!',
