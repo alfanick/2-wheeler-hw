@@ -83,7 +83,6 @@ void balancer_safety(balancer_client balancer,
         break;
 
       case sensors.release_adc(in buffered port:8 * movable miso):
-        debug_printf("got adc\n");
         adc.trigger_from_miso(move(miso));
 
         adc_available = 1;

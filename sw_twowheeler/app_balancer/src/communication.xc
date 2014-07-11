@@ -32,18 +32,22 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
         if (safestrstr(command, "ERROR") == 0)
           break;
 
-        if (!flash && safestrstr(command, "FLASH") == 0) {
-          flash = 1;
+        if (safestrstr(command, "FLASH") == 0) {
+          if (flash == 0) {
+            flash = 1;
 
-          miso = sensors.acquire_adc();
-//        config_open(flash_memory);
+            miso = sensors.acquire_adc();
+ //         config_open(flash_memory);
 
 //          int k = -284;
 //          config_save(BALANCER_LOOPDELAY, &k, 1);
 //          config_read(BALANCER_LOOPDELAY, &k, 1);
 //          debug_printf("read %d\n", k);
 
-          bluetooth.send("OK\r", 3);
+            bluetooth.send("OK\r", 3);
+          } else {
+            bluetooth.send("ERROR\r", 6);
+          }
           break;
         }
 
