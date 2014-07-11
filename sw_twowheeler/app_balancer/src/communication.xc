@@ -24,7 +24,7 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
         if (safestrstr(command, "FLASH") == 0) {
           flash = 1;
 
-          // sensors.acquire_adc();
+          sensors.acquire_adc();
           // config_open();
 
           bluetooth.send("OK\r", 3);

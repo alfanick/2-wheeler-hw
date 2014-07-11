@@ -77,9 +77,13 @@ void balancer_safety(balancer_client balancer,
 
       case sensors.acquire_adc():
         adc_available = 0;
+
+        // change port to miso
         break;
 
       case sensors.release_adc():
+        // change port to 1 bit
+
         adc_available = 1;
         break;
 
