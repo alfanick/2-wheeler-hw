@@ -52,11 +52,11 @@ class TwoWheeler
   end
 
   def loop_delay=(t)
-    method_missing('loopdelay=', Integer(t * 1000.0))
+    self.loopdelay = Integer(t * 1000.0)
   end
 
   def target=(a)
-    method_missing('t=', Integer(a * 1000.0) )
+    self.t = Integer(a * 1000.0)
   end
 
   def pid_lowpass
