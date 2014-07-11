@@ -11,6 +11,7 @@ read.
 
 |   Command   |          Description           |
 | ----------- | ------------------------------ |
+| FLASH       | next cmd will use flash memory |
 | V?          | get battery voltage            |
 | PID?        | get current PID coefficients   |
 | PID=p,i,d   | set PID coefficients           |
@@ -35,6 +36,9 @@ read.
 | ST?         | get speed threshold            |
 | ST=a        | set speed threshold            |
 
+#### FLASH command
+
+Lorem ipsum
 
 ### Replies
 
