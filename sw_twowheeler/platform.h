@@ -25,6 +25,7 @@
 #include <platform.h>
 #include <xs1.h>
 
+#include <flashlib.h>
 #include <uart_fast_tx.h>
 #include <uart_fast_rx.h>
 #include <distance_sensor.h>

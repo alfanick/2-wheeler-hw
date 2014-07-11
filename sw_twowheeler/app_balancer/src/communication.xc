@@ -4,35 +4,6 @@
 #include <debug_print.h>
 #include <safestring.h>
 
-void parse_numbers(unsigned char where[], int length, int offset, int numbers[], const static int size) {
-  int j = 0;
-  int sign[size];
-
-  for (int i = 0; i < size; i++) {
-    numbers[i] = 0;
-    sign[i] = 1;
-  }
-
-  for (int i = offset; i < length && j < size; i++) {
-    if (where[i] == ',') {
-      j++;
-      continue;
-    } else
-    if (where[i] == '-') {
-      sign[j] = -1;
-      continue;
-    }
-
-    int digit = where[i] - '0';
-
-    numbers[j] *= 10;
-    numbers[j] += digit;
-  }
-
-  for (int i = 0; i < size; i++)
-    numbers[i] *= sign[i];
-}
-
 [[combinable]]
 void balancer_communication(balancer_client balancer, bluetooth_client bluetooth, balancer_sensors_client sensors) {
   unsigned char command[128];
@@ -176,4 +147,33 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
         break;
     }
   }
+}
+
+void parse_numbers(unsigned char where[], int length, int offset, int numbers[], const static int size) {
+  int j = 0;
+  int sign[size];
+
+  for (int i = 0; i < size; i++) {
+    numbers[i] = 0;
+    sign[i] = 1;
+  }
+
+  for (int i = offset; i < length && j < size; i++) {
+    if (where[i] == ',') {
+      j++;
+      continue;
+    } else
+    if (where[i] == '-') {
+      sign[j] = -1;
+      continue;
+    }
+
+    int digit = where[i] - '0';
+
+    numbers[j] *= 10;
+    numbers[j] += digit;
+  }
+
+  for (int i = 0; i < size; i++)
+    numbers[i] *= sign[i];
 }
