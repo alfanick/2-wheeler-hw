@@ -8,13 +8,13 @@
 
 
 enum config_properties {
-  BALANCER_SPEED_BOOST = 0,
-  BALANCER_SPEED_THRESHOLD = 1,
-  BALANCER_TARGET = 2,
-  BALANCER_PID = 3,
-  BALANCER_PID_LOWPASS = 6,
-  BALANCER_ANGLE_LOWPASS = 7,
-  BALANCER_LOOPDELAY = 8,
+  config_balancer_speed_boost = 0, //++
+  config_balancer_speed_threshold = 1, //++
+  config_balancer_target = 2, //++
+  config_balancer_pid = 3, //++
+  config_balancer_pid_lowpass = 6,//++
+  config_balancer_lowpass = 7,//++
+  config_balancer_loop_delay = 8,//++
   EOF = 9
 };
 

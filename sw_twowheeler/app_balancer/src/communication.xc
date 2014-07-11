@@ -12,6 +12,19 @@ config_flash_port flash_memory = {
   XS1_CLKBLK_2
 };
 
+#define SAVE(WHAT, VALUE) if (flash == 1) {\
+                            config_save(config_balancer_##WHAT, &VALUE, 1);\
+                          } else {\
+                            balancer.set_##WHAT(VALUE);\
+                          }
+#define SEND(WHAT) { int t; if (flash == 1) {\
+                       config_read(config_balancer_##WHAT, &t, 1);\
+                     } else {\
+                       t = balancer.get_##WHAT();\
+                     }\
+                     bluetooth.send_number(t);\
+                   }
+
 [[combinable]]
 void balancer_communication(balancer_client balancer, bluetooth_client bluetooth, balancer_sensors_client sensors) {
   unsigned char command[128];
@@ -53,24 +66,24 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
 
         if (safestrstr(command, "SB?") == 0) {
           bluetooth.send("SB=", 3);
-          bluetooth.send_number(balancer.get_speed_boost());
+          SEND(speed_boost);
         } else
         if (safestrstr(command, "SB=") == 0) {
           int a;
           parse_numbers(command, command_length, 3, &a, 1);
 
-          balancer.set_speed_boost(a);
+          SAVE(speed_boost, a);
           bluetooth.send("OK\r", 3);
         } else
         if (safestrstr(command, "ST?") == 0) {
           bluetooth.send("ST=", 3);
-          bluetooth.send_number(balancer.get_speed_threshold());
+          SEND(speed_threshold);
         } else
         if (safestrstr(command, "ST=") == 0) {
           int a;
           parse_numbers(command, command_length, 3, &a, 1);
 
-          balancer.set_speed_threshold(a);
+          SAVE(speed_threshold, a);
           bluetooth.send("OK\r", 3);
         } else
         if (safestrstr(command, "A?") == 0) {
@@ -79,17 +92,19 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
         } else
         if (safestrstr(command, "T?") == 0) {
           bluetooth.send("T=", 2);
-          bluetooth.send_number(balancer.get_target());
+          SEND(target);
         } else
         if (safestrstr(command, "T=") == 0) {
           int t;
           parse_numbers(command, command_length, 2, &t, 1);
 
-          balancer.set_target(t);
+          SAVE(target, t);
           bluetooth.send("OK\r", 3);
         } else
         if (safestrstr(command, "T") == 0) {
-          balancer.set_target(balancer.get_angle());
+          int t = balancer.get_angle();
+
+          SAVE(target, t);
           bluetooth.send("OK\r", 3);
         } else
         if (safestrstr(command, "S") == 0) {
@@ -115,38 +130,46 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
           int K[3];
           parse_numbers(command, command_length, 4, K, 3);
 
-          balancer.set_pid(K);
+          if (flash==1) {
+            config_save(config_balancer_pid, K, 3);
+          } else {
+            balancer.set_pid(K);
+          }
 
           bluetooth.send("OK\r", 3);
         } else
         if (safestrstr(command, "PID?") == 0) {
           int K[3];
-          balancer.get_pid(K);
+          if (flash==1) {
+            config_read(config_balancer_pid, K, 3);
+          } else {
+            balancer.get_pid(K);
+          }
 
           bluetooth.send("PID=", 4);
           bluetooth.send_numbers(K, 3);
         } else
         if (safestrstr(command, "PIDLP?") == 0) {
           bluetooth.send("PIDLP=", 6);
-          bluetooth.send_number(balancer.get_pid_lowpass());
+          SEND(pid_lowpass);
         } else
         if (safestrstr(command, "PIDLP=") == 0) {
           int a[1];
           parse_numbers(command, command_length, 6, a, 1);
 
-          balancer.set_pid_lowpass(a[0]);
+          SAVE(pid_lowpass, a[0]);
           bluetooth.send("OK\r", 3);
         } else
         if (safestrstr(command, "ALP=") == 0) {
           int l[1];
           parse_numbers(command, command_length, 4, l, 1);
 
-          balancer.set_lowpass(l[0]);
+          SAVE(lowpass, l[0]);
           bluetooth.send("OK\r", 3);
         } else
         if (safestrstr(command, "ALP?") == 0) {
           bluetooth.send("ALP=", 4);
-          bluetooth.send_number(balancer.get_lowpass());
+          SEND(lowpass);
         } else
         if (safestrstr(command, "RPM?") == 0) {
           int r[2];
@@ -164,13 +187,13 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
         } else
         if (safestrstr(command, "LOOPDELAY?") == 0) {
           bluetooth.send("LOOPDELAY=", 10);
-          bluetooth.send_number(balancer.get_loop_delay());
+          SEND(loop_delay);
         } else
         if (safestrstr(command, "LOOPDELAY=") == 0) {
           int t[1];
           parse_numbers(command, command_length, 10, t, 1);
 
-          balancer.set_loop_delay(t[0]);
+          SAVE(loop_delay, t[0]);
           bluetooth.send("OK\r", 3);
         }
         else
