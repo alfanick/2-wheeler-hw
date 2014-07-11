@@ -9,7 +9,7 @@ class TwoWheeler
     include Singleton
 
     def method_missing(name, *args)
-      puts "WILL SAVE THIS TO MEMORY"
+      TwoWheeler.instance.flash!
       TwoWheeler.instance.send(name, *args)
     end
   end

@@ -15,6 +15,8 @@ void balancer_safety(balancer_client balancer,
   unsigned battery = 0;
   unsigned current[2] = { 0, 0 };
 
+  unsigned adc_available = 1;
+
   while (1) {
     select {
       case motors_status.changed():
@@ -29,6 +31,9 @@ void balancer_safety(balancer_client balancer,
           balancer.stop(-1);
         else
           balancer.balance(-1);
+
+        if (adc_available)
+          adc.trigger();
 
         break;
 
@@ -68,6 +73,14 @@ void balancer_safety(balancer_client balancer,
       case sensors.motors_current() -> { unsigned left, unsigned right }:
         left = current[0];
         right = current[1];
+        break;
+
+      case sensors.acquire_adc():
+        adc_available = 0;
+        break;
+
+      case sensors.release_adc():
+        adc_available = 1;
         break;
 
     }

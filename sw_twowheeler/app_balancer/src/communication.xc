@@ -8,6 +8,7 @@
 void balancer_communication(balancer_client balancer, bluetooth_client bluetooth, balancer_sensors_client sensors) {
   unsigned char command[128];
   int command_length;
+  int flash = 0;
 
   while (1) {
     select {
@@ -19,6 +20,16 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
 
         if (safestrstr(command, "ERROR") == 0)
           break;
+
+        if (safestrstr(command, "FLASH") == 0) {
+          flash = 1;
+
+          // sensors.acquire_adc();
+          // config_open();
+
+          bluetooth.send("OK\r", 3);
+          break;
+        }
 
         if (safestrstr(command, "SB?") == 0) {
           bluetooth.send("SB=", 3);
@@ -144,6 +155,13 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
         }
         else
           bluetooth.send("ERROR\r", 6);
+
+        if (flash) {
+          flash = 0;
+          // config_close();
+          // sensors.release_adc();
+        }
+
         break;
     }
   }
