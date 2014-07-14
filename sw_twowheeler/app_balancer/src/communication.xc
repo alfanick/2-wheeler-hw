@@ -31,8 +31,11 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
   int command_length;
   int flash = 0;
 
-  in buffered port:8 * movable miso = &flash_memory.spiMISO;
-  sensors.release_adc(move(miso));
+  in buffered port:8 * unsafe miso;
+  unsafe {
+      miso = (in buffered port:8 * unsafe) &flash_memory.spiMISO;
+  }
+  sensors.release_adc(miso);
 
   while (1) {
     select {
@@ -202,7 +205,7 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
         if (flash == 1) {
           flash = 0;
           //config_close();
-          sensors.release_adc(move(miso));
+          sensors.release_adc(miso);
         }
 
         break;

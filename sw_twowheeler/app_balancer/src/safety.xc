@@ -76,14 +76,14 @@ void balancer_safety(balancer_client balancer,
         right = current[1];
         break;
 
-      case sensors.acquire_adc() -> in buffered port:8 * movable miso:
+      case sensors.acquire_adc() -> in buffered port:8 * unsafe miso:
         adc_available = 0;
 
         miso = adc.miso_from_trigger();
         break;
 
-      case sensors.release_adc(in buffered port:8 * movable miso):
-        adc.trigger_from_miso(move(miso));
+      case sensors.release_adc(in buffered port:8 * unsafe miso):
+        adc.trigger_from_miso(miso);
 
         adc_available = 1;
         break;
