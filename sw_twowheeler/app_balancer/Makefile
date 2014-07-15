@@ -9,7 +9,7 @@ TARGET = STARTKIT
 APP_NAME = app_balancer
 
 # The USED_MODULES variable lists other module used by the application.
-USED_MODULES = module_logging module_distance_sensor module_lsm303d module_i2c_master module_startkit_adc module_motor_pair module_uart_fast_tx module_uart_fast_rx module_bluetooth module_config
+USED_MODULES = module_xassert module_logging module_distance_sensor module_lsm303d module_i2c_master module_startkit_adc module_motor_pair module_uart_fast_tx module_uart_fast_rx module_bluetooth module_config
 
 # The flags passed to xcc when building the application
 # You can also set the following to override flags for a particular language:

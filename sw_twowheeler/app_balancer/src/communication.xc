@@ -1,9 +1,10 @@
 #include "communication.h"
 
-#define DEBUG_PRINT_ENABLE 0
+#define DEBUG_PRINT_ENABLE 1
 #include <debug_print.h>
 #include <safestring.h>
-
+#include <flashlib.h>
+#include <xassert.h>
 config_flash_port flash_memory = {
   PORT_SPI_MISO,
   PORT_SPI_SS,
@@ -34,7 +35,29 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
   unsigned char command[128];
   int command_length;
   int flash = 0;
+/*
+  const fl_DeviceSpec flash_chip = FL_DEVICE_WINBOND_W25X20;
 
+  assert( 0 == fl_connectToDevice(flash_memory, &flash_chip, 1) );
+
+  unsigned char data_in[256] = "This should work!";
+
+  debug_printf("partition size: %d\n", fl_getDataPartitionSize());
+  debug_printf("page size: %d\n", fl_getPageSize());
+
+  assert( 0 == fl_eraseDataSector(0));
+  assert( 0 == fl_writeDataPage(0, data_in));
+
+  char data_out[256];
+
+  for (int i = 0; i < 256; i++)
+    data_out[i] = 0;
+
+  assert( 0 == fl_readDataPage(0, data_out) );
+
+  debug_printf("read: '%s'\n", data_out);
+  assert( 0 == fl_disconnect() );
+*/
   in buffered port:8 * unsafe miso;
   unsafe {
       miso = (in buffered port:8 * unsafe) &flash_memory.spiMISO;
@@ -58,6 +81,14 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
 
             miso = sensors.acquire_adc();
             config_open(flash_memory);
+
+            int k = 2;
+            config_save(9, &k, 1);
+
+            int t = -1;
+            config_read(9, &t, 1);
+
+            debug_printf("read: %d\n", t);
 
             bluetooth.send("OK\r", 3);
           } else {
