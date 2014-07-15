@@ -1,6 +1,6 @@
 #include "communication.h"
 
-#define DEBUG_PRINT_ENABLE 1
+#define DEBUG_PRINT_ENABLE 0
 #include <debug_print.h>
 #include <safestring.h>
 
@@ -9,11 +9,15 @@ config_flash_port flash_memory = {
   PORT_SPI_SS,
   PORT_SPI_CLK,
   PORT_SPI_MOSI,
-  XS1_CLKBLK_2
+  XS1_CLKBLK_3
 };
 
 #define SAVE(WHAT, VALUE) if (flash == 1) {\
                             config_save(config_balancer_##WHAT, &VALUE, 1);\
+                            debug_printf("SAVING: %d\n", VALUE);\
+                            int t;\
+                            config_read(config_balancer_##WHAT, &t, 1);\
+                            debug_printf("READ: %d\n", t);\
                           } else {\
                             balancer.set_##WHAT(VALUE);\
                           }
@@ -53,12 +57,7 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
             flash = 1;
 
             miso = sensors.acquire_adc();
- //         config_open(flash_memory);
-
-//          int k = -284;
-//          config_save(BALANCER_LOOPDELAY, &k, 1);
-//          config_read(BALANCER_LOOPDELAY, &k, 1);
-//          debug_printf("read %d\n", k);
+            config_open(flash_memory);
 
             bluetooth.send("OK\r", 3);
           } else {
@@ -204,7 +203,7 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
 
         if (flash == 1) {
           flash = 0;
-          //config_close();
+          config_close();
           sensors.release_adc(miso);
         }
 
