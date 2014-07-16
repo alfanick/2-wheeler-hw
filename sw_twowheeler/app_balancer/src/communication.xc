@@ -31,6 +31,13 @@ config_flash_port flash_memory = {
                               } else {\
                                 balancer.set_##WHAT(config[config_balancer_##WHAT]);\
                               }
+#define CONFIG_ARRAY(WHAT, ...) { int config_array_##WHAT[] = {__VA_ARGS__};\
+                                      if (config[config_balancer_##WHAT] == -1) {\
+                                        balancer.set_##WHAT(config_array_##WHAT);\
+                                      } else {\
+                                        balancer.set_##WHAT(config + config_balancer_##WHAT);\
+                                      }\
+                                    }
 
 [[combinable]]
 void balancer_communication(balancer_client balancer, bluetooth_client bluetooth, balancer_sensors_client sensors) {
@@ -45,16 +52,10 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
   CONFIG(speed_boost, 500);
   CONFIG(speed_threshold, 100);
   CONFIG(target, -900);
+  CONFIG_ARRAY(pid, 2300000, 5000000, 0);
   CONFIG(pid_lowpass, 400);
   CONFIG(lowpass, 172);
   CONFIG(loop_delay, 10);
-
-  int pid_default[3] = {2300000, 5000000, 0};
-  if (config[config_balancer_pid] == -1) {
-    balancer.set_pid(pid_default);
-  } else {
-    balancer.set_pid(config + config_balancer_pid);
-  }
 
   in buffered port:8 * unsafe miso;
   unsafe {
