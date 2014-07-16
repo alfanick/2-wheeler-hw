@@ -49,7 +49,7 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
   CONFIG(lowpass, 172);
   CONFIG(loop_delay, 10);
 
-  static int pid_default[3] = {2300000, 5000000, 0};
+  int pid_default[3] = {2300000, 5000000, 0};
   if (config[config_balancer_pid] == -1) {
     balancer.set_pid(pid_default);
   } else {
