@@ -125,6 +125,14 @@ class TwoWheeler
     FlashProxy.instance
   end
 
+  def [](name)
+    self.send(name)
+  end
+
+  def []=(name, a)
+    self.send(name + '=', a)
+  end
+
   private
 
   def initialize(path="/dev/tty.TwoWheeler-SPP")
