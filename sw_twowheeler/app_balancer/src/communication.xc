@@ -1,6 +1,6 @@
 #include "communication.h"
 
-#define DEBUG_PRINT_ENABLE 1
+#define DEBUG_PRINT_ENABLE 0
 #include <debug_print.h>
 #include <safestring.h>
 #include <flashlib.h>
@@ -14,16 +14,12 @@ config_flash_port flash_memory = {
 };
 
 #define SAVE(WHAT, VALUE) if (flash == 1) {\
-                            config_save(config_balancer_##WHAT, &VALUE, 1);\
-                            debug_printf("SAVING: %d\n", VALUE);\
-                            int t;\
-                            config_read(config_balancer_##WHAT, &t, 1);\
-                            debug_printf("READ: %d\n", t);\
+                            config_save(flash_memory, config_balancer_##WHAT, &VALUE, 1, buffer);\
                           } else {\
                             balancer.set_##WHAT(VALUE);\
                           }
 #define SEND(WHAT) { int t; if (flash == 1) {\
-                       config_read(config_balancer_##WHAT, &t, 1);\
+                       config_read(flash_memory, config_balancer_##WHAT, &t, 1, buffer);\
                      } else {\
                        t = balancer.get_##WHAT();\
                      }\
@@ -33,35 +29,14 @@ config_flash_port flash_memory = {
 [[combinable]]
 void balancer_communication(balancer_client balancer, bluetooth_client bluetooth, balancer_sensors_client sensors) {
   unsigned char command[128];
+  unsigned char buffer[256];
   int command_length;
   int flash = 0;
-/*
-  const fl_DeviceSpec flash_chip = FL_DEVICE_WINBOND_W25X20;
-
-  assert( 0 == fl_connectToDevice(flash_memory, &flash_chip, 1) );
-
-  unsigned char data_in[256] = "This should work!";
-
-  debug_printf("partition size: %d\n", fl_getDataPartitionSize());
-  debug_printf("page size: %d\n", fl_getPageSize());
-
-  assert( 0 == fl_eraseDataSector(0));
-  assert( 0 == fl_writeDataPage(0, data_in));
-
-  char data_out[256];
-
-  for (int i = 0; i < 256; i++)
-    data_out[i] = 0;
-
-  assert( 0 == fl_readDataPage(0, data_out) );
-
-  debug_printf("read: '%s'\n", data_out);
-  assert( 0 == fl_disconnect() );
-*/
   in buffered port:8 * unsafe miso;
   unsafe {
       miso = (in buffered port:8 * unsafe) &flash_memory.spiMISO;
   }
+
   sensors.release_adc(miso);
 
   while (1) {
@@ -79,16 +54,7 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
           if (flash == 0) {
             flash = 1;
 
-            miso = sensors.acquire_adc();
-            config_open(flash_memory);
-
-            int k = 2;
-            config_save(9, &k, 1);
-
-            int t = -1;
-            config_read(9, &t, 1);
-
-            debug_printf("read: %d\n", t);
+            sensors.acquire_adc();
 
             bluetooth.send("OK\r", 3);
           } else {
@@ -164,7 +130,7 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
           parse_numbers(command, command_length, 4, K, 3);
 
           if (flash==1) {
-            config_save(config_balancer_pid, K, 3);
+            config_save(flash_memory, config_balancer_pid, K, 3, buffer);
           } else {
             balancer.set_pid(K);
           }
@@ -174,7 +140,7 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
         if (safestrstr(command, "PID?") == 0) {
           int K[3];
           if (flash==1) {
-            config_read(config_balancer_pid, K, 3);
+            config_read(flash_memory, config_balancer_pid, K, 3, buffer);
           } else {
             balancer.get_pid(K);
           }
@@ -234,7 +200,6 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
 
         if (flash == 1) {
           flash = 0;
-          config_close();
           sensors.release_adc(miso);
         }
 

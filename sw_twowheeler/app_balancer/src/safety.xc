@@ -79,11 +79,21 @@ void balancer_safety(balancer_client balancer,
       case sensors.acquire_adc() -> in buffered port:8 * unsafe miso:
         adc_available = 0;
 
-        miso = adc.miso_from_trigger();
+        unsafe {
+          in buffered port:8 * unsafe t = (in buffered port:8 * unsafe)adc.get_trigger();
+          set_port_use_on(*t);
+
+          miso = t;
+        }
         break;
 
       case sensors.release_adc(in buffered port:8 * unsafe miso):
-        adc.trigger_from_miso(miso);
+        unsafe {
+          out port * unsafe t = (out port * unsafe)miso;
+          set_port_use_on(*t);
+
+          adc.set_trigger(t);
+        }
 
         adc_available = 1;
         break;
