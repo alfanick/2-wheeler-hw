@@ -9,6 +9,7 @@ print "Connecting... "
 
 begin
   $balancer = TwoWheeler.instance
+  $flash = $balancer.flash
   puts "done."
 rescue => e
   puts "failed (#{e.message})."
