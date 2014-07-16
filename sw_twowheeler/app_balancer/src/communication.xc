@@ -32,6 +32,19 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
   unsigned char buffer[256];
   int command_length;
   int flash = 0;
+
+
+  int config[EOF];
+  config_read(flash_memory, 0, config, EOF, buffer);
+
+  balancer.set_speed_boost(config[config_balancer_speed_boost]);
+  balancer.set_speed_threshold(config[config_balancer_speed_threshold]);
+  balancer.set_target(config[config_balancer_target]);
+  balancer.set_pid(config+config_balancer_pid);
+  balancer.set_pid_lowpass(config[config_balancer_pid_lowpass]);
+  balancer.set_lowpass(config[config_balancer_lowpass]);
+  balancer.set_loop_delay(config[config_balancer_loop_delay]);
+
   in buffered port:8 * unsafe miso;
   unsafe {
       miso = (in buffered port:8 * unsafe) &flash_memory.spiMISO;
