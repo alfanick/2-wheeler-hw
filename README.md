@@ -8,6 +8,7 @@ The robot is solving physical problem of inverted pendulum using PID regulator c
 * motor driver with current sensing
 * buck converter designed for use with LiPo battery
 * battery voltage monitoring
+* Over-The-Air parameters programming to built-in flash
 * high torque motors with encoders
 
 ## Parts
