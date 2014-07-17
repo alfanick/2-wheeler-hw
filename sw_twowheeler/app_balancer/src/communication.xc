@@ -14,12 +14,12 @@ config_flash_port flash_memory = {
 };
 
 #define SAVE(WHAT, VALUE) if (flash == 1) {\
-                            config_save(flash_memory, config_balancer_##WHAT, &VALUE, 1, buffer);\
+                            config[config_balancer_##WHAT] = VALUE;\
                           } else {\
                             balancer.set_##WHAT(VALUE);\
                           }
 #define SEND(WHAT) { int t; if (flash == 1) {\
-                       config_read(flash_memory, config_balancer_##WHAT, &t, 1, buffer);\
+                       t = config[config_balancer_##WHAT];\
                      } else {\
                        t = balancer.get_##WHAT();\
                      }\
@@ -80,6 +80,8 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
             flash = 1;
 
             sensors.acquire_adc();
+
+            config_read(flash_memory, 0, config, EOF, buffer);
 
             bluetooth.send("OK\r", 3);
           } else {
@@ -155,7 +157,9 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
           parse_numbers(buffer, buffer_length, 4, K, 3);
 
           if (flash==1) {
-            config_save(flash_memory, config_balancer_pid, K, 3, buffer);
+            config[config_balancer_pid + 0] = K[0];
+            config[config_balancer_pid + 1] = K[1];
+            config[config_balancer_pid + 2] = K[2];
           } else {
             balancer.set_pid(K);
           }
@@ -165,7 +169,9 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
         if (safestrstr(buffer, "PID?") == 0) {
           int K[3];
           if (flash==1) {
-            config_read(flash_memory, config_balancer_pid, K, 3, buffer);
+            K[0] = config[config_balancer_pid + 0];
+            K[1] = config[config_balancer_pid + 1];
+            K[2] = config[config_balancer_pid + 2];
           } else {
             balancer.get_pid(K);
           }
@@ -225,6 +231,8 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
 
         if (flash == 1) {
           flash = 0;
+
+          config_save(flash_memory, 0, config, EOF, buffer);
           sensors.release_adc(miso);
         }
 
