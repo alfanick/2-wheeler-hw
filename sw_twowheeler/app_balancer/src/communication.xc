@@ -13,12 +13,12 @@ config_flash_port flash_memory = {
   XS1_CLKBLK_3
 };
 
-#define SAVE(WHAT, VALUE) if (flash == 1) {\
+#define SAVE(WHAT, VALUE) if (flash > 0) {\
                             config[config_balancer_##WHAT] = VALUE;\
                           } else {\
                             balancer.set_##WHAT(VALUE);\
                           }
-#define SEND(WHAT) { int t; if (flash == 1) {\
+#define SEND(WHAT) { int t; if (flash > 0) {\
                        t = config[config_balancer_##WHAT];\
                      } else {\
                        t = balancer.get_##WHAT();\
@@ -77,7 +77,11 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
 
         if (safestrstr(buffer, "FLASH") == 0) {
           if (flash == 0) {
-            flash = 1;
+            if (safestrstr(buffer, "FLASH=") == 0) {
+              parse_numbers(buffer, buffer_length, 6, &flash, 1);
+            } else {
+              flash = 1;
+            }
 
             sensors.acquire_adc();
 
@@ -156,7 +160,7 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
           int K[3];
           parse_numbers(buffer, buffer_length, 4, K, 3);
 
-          if (flash==1) {
+          if (flash>0) {
             config[config_balancer_pid + 0] = K[0];
             config[config_balancer_pid + 1] = K[1];
             config[config_balancer_pid + 2] = K[2];
@@ -168,7 +172,7 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
         } else
         if (safestrstr(buffer, "PID?") == 0) {
           int K[3];
-          if (flash==1) {
+          if (flash>0) {
             K[0] = config[config_balancer_pid + 0];
             K[1] = config[config_balancer_pid + 1];
             K[2] = config[config_balancer_pid + 2];
@@ -229,11 +233,13 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
         else
           bluetooth.send("ERROR\r", 6);
 
-        if (flash == 1) {
-          flash = 0;
+        if (flash > 0) {
+          flash--;
 
-          config_save(flash_memory, 0, config, EOF, buffer);
-          sensors.release_adc(miso);
+          if (flash == 0) {
+            config_save(flash_memory, 0, config, EOF, buffer);
+            sensors.release_adc(miso);
+          }
         }
 
         break;

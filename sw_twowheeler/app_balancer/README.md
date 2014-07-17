@@ -12,6 +12,7 @@ read.
 |   Command   |          Description           |
 | ----------- | ------------------------------ |
 | FLASH       | next cmd will use flash memory |
+| FLASH=k     | next k-cmds will use flash     |
 | V?          | get battery voltage            |
 | PID?        | get current PID coefficients   |
 | PID=p,i,d   | set PID coefficients           |
