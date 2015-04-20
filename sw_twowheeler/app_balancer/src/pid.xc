@@ -64,17 +64,25 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
   int debug_current_sample = 0;
 #endif
 
-  int speed_boost = 500, speed_threshold = 0;
+  int speed_boost = 500,
+      speed_threshold = 0;
+
   int loop_delay = 10;
   unsigned loop_time = 0;
   int lowpass = 1000;
-  float angle = 0, target = 0;
-  float Kp = 50.0, Ki = 30.0 * ((float)loop_delay/1000.0), Kd = 0.0 / ((float)loop_delay/1000.0);
+
+  float angle = 0,
+        target = 0;
+
+  float Kp = 50.0,
+        Ki = 30.0 * ((float)loop_delay/1000.0),
+        Kd = 0.0 / ((float)loop_delay/1000.0);
 
   motors.left(0);
   motors.right(0);
 
   t :> time;
+
   // 1 second delay for start
   time += 1000*XS1_TIMER_KHZ;
 
@@ -93,10 +101,13 @@ void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motor
           speed = last_speed * (1000 - lowpass) + speed * lowpass;
           speed /= 1000;
           last_speed = speed;
+
 #ifdef DEBUG_SAMPLES_ENABLE
           debug_samples_pid[debug_current_sample] = speed;
 #endif
+
           speed = scale_speed(speed, speed_boost, speed_threshold);
+
 #ifdef DEBUG_SAMPLES_ENABLE
           debug_samples_speed[debug_current_sample] = speed;
 #endif
