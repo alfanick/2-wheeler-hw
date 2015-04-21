@@ -28,7 +28,7 @@
 #include <uart_fast_tx.h>
 #include <uart_fast_rx.h>
 #include <distance_sensor.h>
-#include <lsm303d.h>
+#include <imu10.h>
 #include <motors.h>
 
 distance_sensor_t distance_sensors[2] = {
@@ -36,7 +36,7 @@ distance_sensor_t distance_sensors[2] = {
   {  REAR_DISTANCE_SENSOR_TRIGGER,  REAR_DISTANCE_SENSOR_ECHO }
 };
 
-lsm303d_t motion_sensor = {
+imu10_t motion_sensor = {
   MOTION_SENSOR_CLOCK,
   MOTION_SENSOR_DATA,
   250

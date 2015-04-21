@@ -10,7 +10,7 @@
 
 int main() {
   interface distance_sensor_i front, rear;
-  interface lsm303d_i motion;
+  interface imu10_i motion;
   interface motors_i motors;
   interface motors_status_i motors_status;
   interface motor_i left_motor, right_motor;
@@ -50,7 +50,7 @@ int main() {
     on tile[0].core[6] : motor(left_motor, motors_bridge.left);
     on tile[0].core[6] : motor(right_motor, motors_bridge.right);
 
-    on tile[0].core[7] : lsm303d(motion, motion_sensor);
+    on tile[0].core[7] : imu10(motion, motion_sensor);
     on tile[0].core[7] : distance_sensor(front, distance_sensors[0]);
     on tile[0].core[7] : distance_sensor(rear, distance_sensors[1]);
     // motion

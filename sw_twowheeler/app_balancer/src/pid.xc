@@ -52,7 +52,7 @@ inline int scale_speed(int speed, int boost, int threshold) {
 }
 
 [[combinable]]
-void balancer_pid(interface balancer_i server i[2], lsm303d_client motion, motors_client motors) {
+void balancer_pid(interface balancer_i server i[2], imu10_client motion, motors_client motors) {
   timer t; unsigned time,end,start;
   int balancing = 2;
   int speed, last_speed = 0;
