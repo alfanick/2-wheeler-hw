@@ -8,11 +8,11 @@
 
 
 [[combinable]]
-void logic(lsm303d_client lsm, distance_sensor_client front, distance_sensor_client rear, startkit_adc_if client adc, motors_client motors, motors_status_client status);
+void logic(imu10_client lsm, distance_sensor_client front, distance_sensor_client rear, startkit_adc_if client adc, motors_client motors, motors_status_client status);
 
 int main() {
   interface distance_sensor_i front_distance, rear_distance;
-  interface lsm303d_i motion;
+  interface imu10_i motion;
   interface motors_i motors_interface;
   interface motors_status_i motors_status_interface;
   interface motor_i left_motor, right_motor;
@@ -36,7 +36,7 @@ int main() {
     }
 
     par {
-      on tile[0].core[7] : lsm303d(motion, motion_sensor);
+      on tile[0].core[7] : imu10(motion, motion_sensor);
 //      on tile[0].core[7] : distance_sensor(front_distance, distance_sensors[0]);
 //      on tile[0].core[7] : distance_sensor(rear_distance, distance_sensors[1]);
     }
@@ -46,60 +46,54 @@ int main() {
 }
 
 [[combinable]]
-void logic(lsm303d_client lsm, distance_sensor_client front, distance_sensor_client rear, startkit_adc_if client adc, motors_client motors, motors_status_client status) {
+void logic(imu10_client lsm, distance_sensor_client front, distance_sensor_client rear, startkit_adc_if client adc, motors_client motors, motors_status_client status) {
   timer t; unsigned time;
-  vector3d acc, mag;
+  vector3d acc, mag, gyro;
   unsigned short adc_val[4] = {0, 0, 0, 0};
   unsigned int battery_voltage = 0;
   unsigned int left_current = 0, right_current = 0;
 
   float pitch = 0.0f;
 
-  const static int dt = 5;
+  const static int dt = 10;
 
   int k = 0;
-//  motors.left(PWM_PERCENT(0));
-// motors.right(PWM_PERCENT(90));
+
   t :> time;
   time += dt * XS1_TIMER_KHZ;
 
   t when timerafter(time) :> void;
-//  motors.right(PWM_PERCENT(10));
 
   while (1) {
     select {
       case t when timerafter(time) :> void:
-//        debug_printf("BATTERY: %dmV\n", battery_voltage);
-//        debug_printf("LEFT CURRENT: %dmA\n", left_current);
-//        debug_printf("RIGHT CURRENT: %dmA\n", right_current);
-
-//        motors.right(PWM_PERCENT(10));
-//        motors.right(PWM_PERCENT((k += 10) % 100));
         lsm.accelerometer_raw(acc);
         lsm.magnetometer_raw(mag);
+        lsm.gyroscope_raw(gyro);
 
 
         float angle_acc = sqrt(acc.y * acc.y + acc.x * acc.x);
         angle_acc = acc.z / angle_acc;
         angle_acc = atan(angle_acc);
 
-        float angle_mag = sqrt(mag.y * mag.y + mag.x * mag.x);
-        angle_mag = mag.z / angle_mag;
-        angle_mag = -atan(angle_mag);
+        float angle_gyro = sqrt(gyro.y * gyro.y + gyro.x * gyro.x);
+        angle_gyro = gyro.z / angle_gyro;
+        angle_gyro = -atan(angle_gyro);
 
-        pitch += angle_mag * ((float)dt / 1000.0);
+        pitch += angle_gyro * ((float)dt / 1000.0);
 
-        pitch = pitch * 0.85 + angle_acc * 0.15;
+        pitch = pitch * 0.98 + angle_acc * 0.02;
 
         if (k++ == 1000/dt) {
           debug_printf("ACC_RAW: %d %d %d\n", acc.x, acc.y, acc.z);
-          debug_printf("ACC:     %d %d %d\n", acc.x, acc.y, acc.z);
-
           debug_printf("MAG_RAW: %d %d %d\n", mag.x, mag.y, mag.z);
-          debug_printf("MAG:     %d %d %d\n", mag.x, mag.y, mag.z);
+          debug_printf("GYRO_RAW: %d %d %d\n", gyro.x, gyro.y, gyro.z);
 
-          debug_printf("AD: %d\tMD: %d\n", (int)(angle_acc * 1000.0 * 180.0 / M_PI), (int)(angle_mag * 1000.0 * 180.0 / M_PI));
-          debug_printf("PITCH: %d\n", (int)(pitch * 1000.0 * 180.0 / M_PI));
+
+          debug_printf("ACC_ANGLE: %d\n", (int)(angle_acc * 1000.0 * 180.0 / M_PI));
+          debug_printf("GYRO_ANGLE: %d\n", (int)(angle_gyro * 1000.0 * 180.0 / M_PI));
+
+          debug_printf("PITCH: %d\n\n", (int)(pitch * 1000.0 * 180.0 / M_PI));
 
           k=0;
         }

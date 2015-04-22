@@ -9,7 +9,7 @@ TARGET = STARTKIT
 APP_NAME =
 
 # The USED_MODULES variable lists other module used by the application.
-USED_MODULES = module_logging module_distance_sensor module_lsm303d module_i2c_master module_startkit_adc module_motor_pair module_uart_fast_tx module_uart_fast_rx
+USED_MODULES = module_logging module_distance_sensor module_imu10 module_i2c_master module_startkit_adc module_motor_pair module_uart_fast_tx module_uart_fast_rx
 
 # The flags passed to xcc when building the application
 # You can also set the following to override flags for a particular language:
