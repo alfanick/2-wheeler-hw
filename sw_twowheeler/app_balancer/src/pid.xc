@@ -14,10 +14,6 @@
                       ((x) < -(mx)) ? -(mx) :\
                       (x))
 
-float inline kalman(float new_angle, float new_rate, float dt) {
-  return new_angle;
-}
-
 int inline pid(float angle, float target, float Kp, float Ki, float Kd) {
   static float error_integral = 0,
                last_error = 0,
@@ -98,13 +94,7 @@ void balancer_pid(interface balancer_i server i[2], imu10_client motion, motors_
         time += loop_delay * XS1_TIMER_KHZ;
         t :> start;
 
-        /* angle = motion.get_pitch(); */
-        acc = motion.accelerometer_pitch();
-        gyro = motion.gyroscope_pitch();
-        angle = kalman(acc, gyro, loop_delay / 1000.0);
-        /* angle = kalman(motion.accelerometer_pitch(), */
-        /*                motion.gyroscope_pitch(), */
-        /*                loop_delay); */
+        angle = motion.get_pitch();
 
         safety.next();
 

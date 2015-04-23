@@ -49,12 +49,12 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
   int config[EOF];
   config_read(flash_memory, 0, config, EOF, buffer);
 
-  CONFIG(speed_boost, 500);
+  CONFIG(speed_boost, 250);
   CONFIG(speed_threshold, 100);
-  CONFIG(target, -900);
-  CONFIG_ARRAY(pid, 2300000, 5000000, 0);
-  CONFIG(pid_lowpass, 400);
-  CONFIG(lowpass, 172);
+  CONFIG(target, -2190);
+  CONFIG_ARRAY(pid, 2000000, 0, 0);
+  CONFIG(pid_lowpass, 0);
+  CONFIG(lowpass, 0);
   CONFIG(loop_delay, 10);
 
   in buffered port:8 * unsafe miso;
