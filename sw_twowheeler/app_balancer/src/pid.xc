@@ -74,7 +74,8 @@ void balancer_pid(interface balancer_i server i[2], imu10_client motion, motors_
   float acc, gyro;
 
   float angle = 0,
-        target = 0;
+        target = 0,
+        raw_angle = 0;
 
   float Kp = 50.0,
         Ki = 30.0 * ((float)loop_delay/1000.0),
@@ -95,6 +96,7 @@ void balancer_pid(interface balancer_i server i[2], imu10_client motion, motors_
         t :> start;
 
         angle = motion.get_pitch();
+        raw_angle = motion.accelerometer_pitch();
 
         safety.next();
 
@@ -198,8 +200,11 @@ void balancer_pid(interface balancer_i server i[2], imu10_client motion, motors_
         r[1] = motors.right_rpm();
         break;
 
-      case i[int _].get_angle() -> int a:
-        a = (int)(angle * 180.0 / M_PI * 1000);
+      case i[int _].get_angle(int raw) -> int a:
+        if (raw == 1)
+          a = (int)(raw_angle * 180.0 / M_PI * 1000);
+        else
+          a = (int)(angle * 180.0 / M_PI * 1000);
         break;
 
       case i[int _].set_target(int a):

@@ -24,7 +24,7 @@ interface balancer_i {
   slave void next();
 
   [[clears_notification]]
-  int get_angle();
+  int get_angle(int raw);
 
   unsigned get_loop_time();
 

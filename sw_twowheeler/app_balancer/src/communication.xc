@@ -118,7 +118,7 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
         } else
         if (safestrstr(buffer, "A?") == 0) {
           bluetooth.send("A=", 2);
-          bluetooth.send_number(balancer.get_angle());
+          bluetooth.send_number(balancer.get_angle(0));
         } else
         if (safestrstr(buffer, "T?") == 0) {
           bluetooth.send("T=", 2);
@@ -132,7 +132,7 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
           bluetooth.send("OK\r", 3);
         } else
         if (safestrstr(buffer, "T") == 0) {
-          int t = balancer.get_angle();
+          int t = balancer.get_angle(0);
 
           SAVE(target, t);
           bluetooth.send("OK\r", 3);

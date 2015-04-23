@@ -26,7 +26,7 @@ void balancer_safety(balancer_client balancer,
         break;
 
       case balancer.next():
-        int angle = balancer.get_angle();
+        int angle = balancer.get_angle(1);
 
         if (angle > 43000 || angle < -43000)
           balancer.stop(-1);
