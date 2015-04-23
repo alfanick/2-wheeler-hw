@@ -25,15 +25,15 @@ int main() {
     startkit_adc(adc_chan);
     on tile[0] : adc_task(adc_i, adc_chan, 0);
 
-    on tile[0].core[6] : motors_logic(motors_interface, motors_status_interface,
-                                      left_motor, right_motor,
-                                      motors_bridge.directions,
-                                      motors_bridge.sensors);
+    /* on tile[0].core[6] : motors_logic(motors_interface, motors_status_interface, */
+                                      /* left_motor, right_motor, */
+                                      /* motors_bridge.directions, */
+                                      /* motors_bridge.sensors); */
 
-    par {
-      on tile[0].core[6] : motor(left_motor, motors_bridge.left);
-      on tile[0].core[6] : motor(right_motor, motors_bridge.right);
-    }
+    /* par { */
+      /* on tile[0].core[6] : motor(left_motor, motors_bridge.left); */
+      /* on tile[0].core[6] : motor(right_motor, motors_bridge.right); */
+    /* } */
 
     par {
       on tile[0].core[7] : imu10(motion, motion_sensor);
@@ -54,46 +54,50 @@ void logic(imu10_client lsm, distance_sensor_client front, distance_sensor_clien
   unsigned int left_current = 0, right_current = 0;
 
   float pitch = 0.0f;
+  float p, ap, gp;
 
   const static int dt = 10;
 
   int k = 0;
 
+  debug_printf("acc,gyro,kalman\n");
+
   t :> time;
-  time += dt * XS1_TIMER_KHZ;
+  time += 1000 * XS1_TIMER_KHZ;
 
   t when timerafter(time) :> void;
 
   while (1) {
     select {
       case t when timerafter(time) :> void:
-        lsm.accelerometer_raw(acc);
-        lsm.magnetometer_raw(mag);
+        /* lsm.accelerometer_raw(acc); */
+        /* lsm.magnetometer_raw(mag); */
         lsm.gyroscope_raw(gyro);
 
+        if (k++ == 1000/(dt*10)) {
+          /* debug_printf("ACC_RAW: %d %d %d\n", acc.x, acc.y, acc.z); */
+          /* debug_printf("MAG_RAW: %d %d %d\n", mag.x, mag.y, mag.z); */
+          /* debug_printf("GYRO_RAW: %d %d %d\n", gyro.x, gyro.y, gyro.z); */
+          /* debug_printf("%d,%d,%d\n", gyro.x, gyro.y, gyro.z); */
 
-        float angle_acc = sqrt(acc.y * acc.y + acc.x * acc.x);
-        angle_acc = acc.z / angle_acc;
-        angle_acc = atan(angle_acc);
+          /* debug_printf("a\n"); */
 
-        float angle_gyro = sqrt(gyro.y * gyro.y + gyro.x * gyro.x);
-        angle_gyro = gyro.z / angle_gyro;
-        angle_gyro = -atan(angle_gyro);
+          ap = lsm.accelerometer_pitch();
+          gp = lsm.gyroscope_pitch();
+          p = lsm.get_pitch();
+          /* ap = 0; */
+          /* gp = 0; */
+          /* p = 0; */
 
-        pitch += angle_gyro * ((float)dt / 1000.0);
-
-        pitch = pitch * 0.98 + angle_acc * 0.02;
-
-        if (k++ == 1000/dt) {
-          debug_printf("ACC_RAW: %d %d %d\n", acc.x, acc.y, acc.z);
-          debug_printf("MAG_RAW: %d %d %d\n", mag.x, mag.y, mag.z);
-          debug_printf("GYRO_RAW: %d %d %d\n", gyro.x, gyro.y, gyro.z);
+          /* debug_printf("a\n"); */
+          /* debug_printf("%d,%d,%d\n",  (int)(lsm.accelerometer_pitch() * 1000), (int)(lsm.gyroscope_pitch() * 1000), (int)(lsm.get_pitch()*1000)); */
+          debug_printf("%d,%d,%d,%d\n",  (int)(ap * 1000), (int)(gyro.x * 17.50 / 1000.0), (int)(p*1000), (int)(p * 180.0 / M_PI));
 
 
-          debug_printf("ACC_ANGLE: %d\n", (int)(angle_acc * 1000.0 * 180.0 / M_PI));
-          debug_printf("GYRO_ANGLE: %d\n", (int)(angle_gyro * 1000.0 * 180.0 / M_PI));
+          /* debug_printf("ACC_ANGLE: %d\n", (int)(angle_acc * 1000.0 * 180.0 / M_PI)); */
+          /* debug_printf("GYRO_ANGLE: %d\n", (int)(angle_gyro * 1000.0 * 180.0 / M_PI)); */
 
-          debug_printf("PITCH: %d\n\n", (int)(pitch * 1000.0 * 180.0 / M_PI));
+          /* debug_printf("PITCH: %d\n\n", (int)(pitch * 1000.0 * 180.0 / M_PI)); */
 
           k=0;
         }
