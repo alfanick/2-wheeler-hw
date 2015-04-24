@@ -178,7 +178,10 @@ class TwoWheeler
     'motors_boost'     => 'sb?',
     'motors_boost='    => 'sb=',
     'motors_threshold' => 'st?',
-    'motors_threshold='=> 'st='
+    'motors_threshold='=> 'st=',
+
+    'lowpass!'         => 'ulp!',
+    'kalman!'          => 'uklm!'
   }
 
   def create_command(name, args)

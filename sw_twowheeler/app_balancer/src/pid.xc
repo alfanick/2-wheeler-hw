@@ -140,6 +140,10 @@ void balancer_pid(interface balancer_i server i[2], imu10_client motion, motors_
         loop_time = end - start;
         break;
 
+      case i[int _].use_kalman(int state):
+        motion.use_kalman(state);
+        break;
+
       case i[int _].stop(int reason):
         if (reason < balancing) {
           balancing = reason;

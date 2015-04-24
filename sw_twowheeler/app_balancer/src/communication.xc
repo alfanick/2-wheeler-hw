@@ -94,6 +94,12 @@ void balancer_communication(balancer_client balancer, bluetooth_client bluetooth
           break;
         }
 
+        if (safestrstr(buffer, "ULP") == 0) {
+          balancer.use_kalman(0);
+        } else
+        if (safestrstr(buffer, "UKLM") == 0) {
+          balancer.use_kalman(1);
+        } else
         if (safestrstr(buffer, "SB?") == 0) {
           bluetooth.send("SB=", 3);
           SEND(speed_boost);

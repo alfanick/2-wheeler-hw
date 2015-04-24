@@ -28,6 +28,8 @@ interface balancer_i {
 
   unsigned get_loop_time();
 
+  void use_kalman(int status);
+
   void set_target(int angle);
   int get_target();
 
